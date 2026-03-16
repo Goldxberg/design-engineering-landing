@@ -1,6 +1,91 @@
 @import url('https://unpkg.com/normalize.css') layer(normalize);
 
-@layer normalize, base, demo, form, toc, transitions, alignment, theme-toggle, pricing-toggle, skill-panels, morphing-faq, course-cards;
+@layer normalize, base, demo, building-text, form, toc, transitions, alignment, theme-toggle, pricing-toggle, skill-panels, morphing-faq, course-cards;
+
+@layer building-text {
+  :root {
+    --cable: color-mix(in lch, canvasText, canvas 35%);
+    --claw: color-mix(in lch, canvasText, canvas 15%);
+    --head: color-mix(in lch, canvasText, canvas 25%);
+    --delay: 1s;
+    --speed: 2.4s;
+    --base-delay: 1;
+    --cross-delay: 0;
+    --cross-speed: 2.8;
+    --dot-delay: 0.8;
+    --dot-speed: 4.4;
+  }
+
+  .building-header {
+    position: relative;
+  }
+
+  .tagline {
+    --font-level: 6;
+    height: 1em;
+    overflow: visible !important;
+  }
+
+  .construct {
+    animation: slide-in var(--speed) var(--delay) ease-out both;
+  }
+  .claw {
+    animation: slide-out var(--speed) var(--delay) ease-in both;
+  }
+  .claw path {
+    animation: let-go var(--speed) var(--delay) ease-out both;
+  }
+
+  .construct--horizontal {
+    --delay: calc((var(--base-delay) + var(--cross-delay)) * 1s);
+    --speed: calc(var(--cross-speed) * 1s);
+    --x: -100vmax;
+  }
+  .construct--vertical {
+    --delay: calc((var(--base-delay) + var(--dot-delay)) * 1s);
+    --speed: calc(var(--dot-speed) * 1s);
+    --y: -150vmax;
+  }
+
+  @keyframes let-go {
+    0%, 48% { rotate: var(--start); }
+    50%, 100% { rotate: var(--end); }
+  }
+  @keyframes slide-in {
+    0% { transform: translate(var(--x, 0), var(--y, 0)); }
+    40%, 100% { transform: translate(0, 0); }
+  }
+  @keyframes slide-out {
+    0%, 60% { transform: translate(0, 0); }
+    100% { transform: translate(var(--x, 0), var(--y, 0)); }
+  }
+
+  .construct, .claw, .cross, .dot, .claw path {
+    transform-box: fill-box;
+  }
+
+  .claw--horizontal { transform-origin: 50% 50%; }
+  .claw path { stroke: var(--claw); }
+  .claw line { stroke: var(--cable); }
+  .claw circle { fill: var(--head); stroke: var(--head); }
+
+  .claw--vertical path:nth-of-type(1) {
+    transform-origin: 0 0; rotate: -25deg;
+    --start: 0; --end: -25deg;
+  }
+  .claw--vertical path:nth-of-type(2) {
+    transform-origin: 100% 0; rotate: 25deg;
+    --start: 0; --end: 25deg;
+  }
+  .claw--horizontal path:nth-of-type(1) {
+    transform-origin: 0 100%; rotate: 4deg;
+    --start: 4deg; --end: -25deg;
+  }
+  .claw--horizontal path:nth-of-type(2) {
+    transform-origin: 0 100%; rotate: -4deg;
+    --start: -4deg; --end: 25deg;
+  }
+}
 
 @layer alignment {
   [data-align='right'] {
