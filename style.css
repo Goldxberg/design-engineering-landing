@@ -306,7 +306,7 @@
       letter-spacing: 0.02em;
       padding: 0.3rem 0.75rem;
       border-radius: 100px;
-      background: light-dark(hsl(24 85% 50%), hsl(24 80% 48%));
+      background: #FF1E1E;
       color: #fff;
       animation: pulse-badge 2s ease-in-out infinite;
     }
@@ -920,7 +920,7 @@
 
   .skill-panel__header svg {
     flex-shrink: 0;
-    color: light-dark(hsl(24 85% 50%), hsl(24 80% 48%));
+    color: #FF1E1E;
   }
 
   .skill-panel__header h3 {
@@ -1485,5 +1485,5 @@
   margin-top: 1rem;
   font-size: 0.875rem;
   font-weight: 600;
-  color: light-dark(hsl(24 85% 50%), hsl(24 80% 48%));
+  color: #FF1E1E;
 }
