@@ -762,44 +762,6 @@
   }
 }
 
-/* ===== Scroll Demo CTA ===== */
-@layer demo {
-  .scroll-demo-cta {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    padding: 2rem;
-    border: 1px solid color-mix(in hsl, canvasText, transparent 80%);
-    border-radius: 12px;
-    background: light-dark(hsl(0 0% 97%), hsl(0 0% 6%));
-  }
-
-  .scroll-demo-cta h2 {
-    margin: 0;
-  }
-
-  .scroll-demo-cta p {
-    margin: 0;
-    opacity: 0.8;
-  }
-
-  .demo-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: light-dark(var(--accent-light), var(--accent-dark));
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 0.95rem;
-    width: fit-content;
-    transition: gap 0.2s ease;
-  }
-
-  .demo-link:hover {
-    gap: 0.75rem;
-  }
-}
-
 /* ===== Course Cards (from CodePen XJWNMOO) ===== */
 @layer course-cards {
   .courses-section {
