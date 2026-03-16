@@ -34,6 +34,33 @@ toggle.addEventListener('click', () => {
   localStorage.setItem('theme', next);
 });
 
+// Morphing disclosure: measure content heights for animation
+function measureContentHeights() {
+  const details = document.querySelectorAll('.morphing-disclosure details');
+  const container = document.querySelector('.morphing-disclosure');
+  if (!container || details.length === 0) return;
+
+  const originalVisibility = container.style.visibility;
+  container.style.visibility = 'hidden';
+
+  details.forEach((detail) => {
+    const wasOpen = detail.hasAttribute('open');
+    if (!wasOpen) detail.setAttribute('open', '');
+    detail.offsetHeight;
+
+    const content = detail.querySelector('.content');
+    if (content) {
+      const height = Math.ceil(content.getBoundingClientRect().height);
+      detail.style.setProperty('--content-height', `${height}px`);
+    }
+
+    if (!wasOpen) detail.removeAttribute('open');
+  });
+
+  container.style.visibility = originalVisibility;
+}
+measureContentHeights();
+
 // Generate table of contents
 function generateTableOfContents() {
   const tocElement = document.querySelector('table-of-contents');
