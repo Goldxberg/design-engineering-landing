@@ -2,10 +2,13 @@
 const toggle = document.getElementById('theme-toggle');
 const root = document.documentElement;
 
-// Check for saved preference or default to system
+// Check for saved preference or default to light
 const savedTheme = localStorage.getItem('theme');
 if (savedTheme) {
   root.dataset.theme = savedTheme;
+} else {
+  root.dataset.theme = 'light';
+  localStorage.setItem('theme', 'light');
 }
 
 toggle.addEventListener('click', () => {
