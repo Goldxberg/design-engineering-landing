@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0, maximum-scale=1.0">
+  <title>Sticky Window Scroller w/ 3D View</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+@import url('https://unpkg.com/normalize.css') layer(normalize);
+
+@layer normalize, base, demo, explode, transitions, intel, theme-toggle;
+
+@layer intel {
+  header {
+    position: relative;
+  }
+  .arrow {
+    font-family: 'Gloria Hallelujah', cursive;
+    font-size: 0.875rem;
+    position: absolute;
+    opacity: 0.7;
+    color: canvasText;
+    pointer-events: none;
+
+    &.arrow--detail {
+      opacity: 0;
+      transition: opacity 0.26s ease-out;
+      bottom: 20%;
+      left: 25%;
+      color: hsl(0 0% 0%);
+      scale: 1.25;
+
+      svg {
+        left: 90%;
+        scale: -0.8;
+        rotate: 160deg;
+      }
+    }
+    &.arrow--instruction {
+      bottom: 20%;
+      right: 35%;
+      scale: 1.25;
+
+      span {
+        display: inline-block;
+        rotate: 15deg;
+      }
+
+      svg {
+        top: 100%;
+        rotate: -15deg;
+      }
+    }
+
+    span {
+      white-space: nowrap;
+    }
+    svg {
+      bottom: calc(100% + 10px);
+      position: absolute;
+      rotate: 80deg;
+      translate: -50% 0;
+      scale: -1 -1;
+      left: 0;
+      width: 60px;
+    }
+  }
+
+  .arrow--detail {
+    transition: opacity 0.5s 0s;
+  }
+  [data-explode='true'] .arrow--detail {
+    opacity: 0.7;
+    transition: opacity 0.5s 1s;
+  }
+}
+
+@layer transitions {
+  .dummy {
+    transform: translate3d(0, 0, 0);
+  }
+  .stickies .frame {
+    transform: translate3d(0, 100%, 0);
+  }
+  .stickies .backdrop {
+    transform: translate3d(0, 100%, 0);
+  }
+
+  .scene {
+    transition: transform 1s 1s;
+  }
+  .container .window .frame {
+    overflow: hidden;
+  }
+  .container .backdrop-shadow::before {
+    transition: opacity 1s, translate 1s, filter 1s;
+  }
+  .stickies .frame::before {
+    transition: opacity 1s;
+  }
+  .stickies,
+  .dummy,
+  .stickies .frame,
+  .stickies .backdrop {
+    transition: transform 1s;
+  }
+
+  .stickies .backdrop__track img,
+  .backdrop__frame {
+    transition-property: opacity, filter, translate;
+    transition-duration: 1s;
+  }
+
+  [data-explode='true'] .scene {
+    transform: rotateX(-20deg) rotateY(45deg) scale(0.4) translate3d(0, 0, -150px);
+  }
+  .container .backdrop-shadow {
+    opacity: 0;
+    transition: opacity 0.1s 1s;
+  }
+  [data-explode='true'] .container .backdrop-shadow {
+    opacity: 1;
+    transition: opacity 0s 1s;
+  }
+  [data-explode='true'] .container .backdrop-shadow::before {
+    opacity: 0.26;
+    translate: -20% 30%;
+    filter: blur(30px);
+  }
+  [data-explode='true'] :is(.dummy, .stickies) {
+    opacity: 1;
+  }
+  [data-explode='true'] .stickies .frame::before {
+    opacity: 0;
+  }
+  [data-explode='true'] {
+    .scene {
+      transition: transform 1s;
+    }
+    .container .backdrop-shadow::before {
+      transition: opacity 1s 1s, translate 1s 1s, filter 1s 1s;
+    }
+    .stickies,
+    .dummy,
+    .stickies .frame,
+    .stickies .backdrop {
+      transition: transform 1s 1s;
+    }
+    .stickies .frame::before {
+      transition: opacity 1s 1s;
+    }
+    .backdrop__frame {
+      opacity: 0.1;
+      filter: blur(30px);
+      translate: -20% 30%;
+      transition-delay: 1s;
+    }
+    .stickies .backdrop__track img {
+      opacity: 0.2;
+      filter: grayscale(1) brightness(0) blur(20px);
+      translate: -25% 50%;
+      transition-delay: 1s;
+    }
+    .dummy {
+      transform: translate3d(0, 0, 200px);
+    }
+    .stickies .frame {
+      transform: translate3d(0, 100%, 300px);
+    }
+    .stickies .backdrop {
+      transform: translate3d(0, 100%, 100px);
+    }
+  }
+
+  [data-collapsed='true'] :is(.stickies, .dummy) {
+    clip-path: inset(0 16px 0 0);
+  }
+}
+
+@layer explode {
+  *, *::before, *::after {
+    transform-style: preserve-3d;
+  }
+
+  :root {
+    overflow: hidden;
+    timeline-scope: --content, --main;
+  }
+
+  body {
+    background: light-dark(hsl(0 0% 80%), hsl(0 0% 90%));
+    perspective: 1400px;
+    transform-style: preserve-3d;
+    overflow: hidden;
+  }
+
+  .scene {
+    transform-style: preserve-3d;
+    height: 100vh;
+    width: 100%;
+    background: light-dark(#fff, #000);
+  }
+  .container main {
+    view-timeline: --main;
+  }
+
+  .stickies {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+
+    .frame, .backdrop {
+      animation-name: frame-entry, frame-exit;
+      animation-fill-mode: both;
+      animation-timing-function: linear;
+      animation-timeline: --main;
+      animation-range: entry, exit;
+    }
+    .backdrop {
+      height: 100vh;
+      overflow: hidden;
+
+      .backdrop__frame {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        opacity: 0.8;
+        filter: blur(0px);
+        translate: 0 0;
+
+        &::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          inset: calc(var(--frame) * 1.5) var(--frame);
+          outline: calc(var(--frame) * 4) solid hsl(0 0% 0%);
+          border-radius: calc(var(--radius) * 1px);
+        }
+      }
+      .backdrop__track {
+        margin-top: calc(var(--margin) * 1vh);
+        display: grid;
+        place-items: center;
+
+        div {
+          min-height: calc(var(--height) * 1vh);
+          display: grid;
+          place-items: center;
+          width: 100%;
+        }
+      }
+
+      img {
+        max-height: 75cqb;
+        width: 75%;
+        object-fit: contain;
+        filter: grayscale(1) brightness(0) blur(0px);
+        opacity: 0.8;
+      }
+    }
+  }
+
+  .dummy {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    pointer-events: none;
+    animation: scroll both linear;
+    animation-timeline: --content;
+
+    p, h2, header, footer {
+      opacity: 0;
+    }
+  }
+
+  .container {
+    transform-style: preserve-3d;
+    scroll-snap-type: y proximity;
+    height: 100%;
+    overflow: auto;
+    scroll-timeline: --content;
+  }
+
+  .backdrop__track {
+    --destination: calc(-100% + (var(--height) * 1vh));
+    animation: scroll both linear;
+    animation-timeline: --main;
+    animation-range: entry 100% contain 100%;
+  }
+
+  @keyframes scroll {
+    to {
+      translate: 0 var(--destination, calc(-100% + 100vh));
+    }
+  }
+  @keyframes frame-entry {
+    to {
+      translate: 0 -100%;
+    }
+  }
+  @keyframes frame-exit {
+    to {
+      translate: 0 -200%;
+    }
+  }
+}
+
+@layer demo {
+  :root {
+    --height: 60;
+    --margin: calc((100 - var(--height)) * 0.5);
+    --frame: 6vh;
+    --radius: 24;
+  }
+  html {
+    scroll-snap-type: y proximity;
+    scrollbar-color: canvasText #0000;
+  }
+  h1.fluid {
+    --font-level: 6;
+    font-style: italic;
+
+    span:last-of-type {
+      font-weight: 300;
+    }
+  }
+  .container {
+    width: 100%;
+  }
+
+  .backdrop, .window {
+    grid-column: 2;
+    grid-row: 1;
+    z-index: -1;
+    grid-row: 1 / -1;
+    position: sticky;
+    top: 0;
+  }
+
+  .backdrop::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 100vh;
+    background: url(https://assets.codepen.io/605876/geo-backdrop.png?format=auto&quality=100);
+    background-size: cover;
+    background-position: 75% 50%;
+    filter: saturate(0.5);
+  }
+
+  .window {
+    z-index: 2;
+    background: #0000;
+    pointer-events: none;
+
+    .frame {
+      position: absolute;
+      inset: 0;
+      height: 100vh;
+      overflow: hidden;
+      background: #0000;
+      outline: 1px solid light-dark(#fff, #000);
+
+      &::before {
+        content: '';
+        inset: calc(var(--frame) * 1.5) var(--frame);
+        position: absolute;
+        border-radius: calc(var(--radius) * 1px);
+        box-shadow: 0 0 calc(var(--radius) * 1px) 0px light-dark(hsl(0 0% 20%), #000) inset;
+      }
+
+      &::after {
+        content: '';
+        background: #0000;
+        position: absolute;
+        inset: calc(var(--frame) * 1.5) var(--frame);
+        outline: calc(var(--frame) * 4) solid light-dark(#fff, #000);
+        border-radius: calc(var(--radius) * 1px);
+      }
+    }
+  }
+
+  .backdrop-shadow {
+    grid-column: 2;
+    grid-row: 1;
+    position: sticky;
+    top: 0;
+    z-index: 40;
+  }
+
+  .container .backdrop-shadow::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: hsl(0 0% 0%);
+    z-index: 30;
+    border-radius: 0;
+    box-shadow: none;
+    height: 100vh;
+    translate: 0 0;
+  }
+
+  header {
+    height: 100vh;
+    display: grid;
+    place-items: center;
+  }
+  .footer {
+    position: relative;
+    height: 100vh;
+    display: grid;
+    place-items: center;
+
+    .fluid {
+      --font-level: 4;
+      font-weight: 600;
+    }
+  }
+  footer {
+    position: absolute;
+    bottom: 0;
+    padding: 1rem;
+    opacity: 0.7;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 0.5rem;
+    justify-content: center;
+  }
+  main {
+    display: grid;
+    grid-template-columns: 0.65fr 1fr;
+    width: 100%;
+    padding-bottom: calc(var(--margin) * 1vh);
+  }
+  main section {
+    z-index: 1;
+    article {
+      padding: 1.25rem 0 1.25rem 4.5rem;
+      display: grid;
+      gap: 0.5rem;
+    }
+    p {
+      font-size: 1.25rem;
+      line-height: 1.5;
+      font-weight: 300;
+      text-wrap: balance;
+      margin: 0;
+    }
+    h2 {
+      --font-level: 2;
+      text-wrap: balance;
+      margin: 0;
+      font-weight: 400;
+    }
+    div:first-of-type {
+      display: grid;
+      place-items: center;
+    }
+    div:last-of-type {
+      display: grid;
+      place-items: center;
+      height: 100%;
+      width: 100%;
+    }
+    img {
+      max-height: 75cqb;
+      width: 75%;
+      object-fit: contain;
+      filter: drop-shadow(0 6px 4px hsl(0 0% 0% / 0.3));
+    }
+    &:first-of-type {
+      grid-row: 1;
+      margin-top: calc(var(--margin) * 1vh);
+    }
+
+    scroll-snap-align: center;
+    grid-column: 1 / -1;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    min-height: calc(var(--height) * 1vh);
+    grid-template-columns: subgrid;
+  }
+}
+
+@layer base {
+  :root {
+    --font-size-min: 16;
+    --font-size-max: 20;
+    --font-ratio-min: 1.2;
+    --font-ratio-max: 1.33;
+    --font-width-min: 375;
+    --font-width-max: 1500;
+  }
+
+  html {
+    color-scheme: light dark;
+  }
+
+  [data-theme='light'] {
+    color-scheme: light only;
+  }
+
+  [data-theme='dark'] {
+    color-scheme: dark only;
+  }
+
+  :where(.fluid) {
+    --fluid-min: calc(
+      var(--font-size-min) * pow(var(--font-ratio-min), var(--font-level, 0))
+    );
+    --fluid-max: calc(
+      var(--font-size-max) * pow(var(--font-ratio-max), var(--font-level, 0))
+    );
+    --fluid-preferred: calc(
+      (var(--fluid-max) - var(--fluid-min)) /
+        (var(--font-width-max) - var(--font-width-min))
+    );
+    --fluid-type: clamp(
+      (var(--fluid-min) / 16) * 1rem,
+      ((var(--fluid-min) / 16) * 1rem) -
+        (((var(--fluid-preferred) * var(--font-width-min)) / 16) * 1rem) +
+        (var(--fluid-preferred) * var(--variable-unit, 100vi)),
+      (var(--fluid-max) / 16) * 1rem
+    );
+    font-size: var(--fluid-type);
+  }
+
+  *,
+  *:after,
+  *:before {
+    box-sizing: border-box;
+  }
+
+  body {
+    background: light-dark(#fff, #000);
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+    font-family: 'SF Pro Text', 'SF Pro Icons', 'AOS Icons', 'Helvetica Neue',
+      Helvetica, Arial, sans-serif, system-ui;
+  }
+
+  .scene::before {
+    --size: 45px;
+    --line: color-mix(in hsl, canvasText, transparent 80%);
+    content: '';
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    background: linear-gradient(
+          90deg,
+          var(--line) 1px,
+          transparent 1px var(--size)
+        )
+        calc(var(--size) * 0.36) 50% / var(--size) var(--size),
+      linear-gradient(var(--line) 1px, transparent 1px var(--size)) 0%
+        calc(var(--size) * 0.32) / var(--size) var(--size);
+    mask: linear-gradient(-60deg, transparent 70%, white);
+    top: 0;
+    transform-style: flat;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  /* Utilities */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+}
+
+@layer theme-toggle {
+  .back-link {
+    color: canvasText;
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 100;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid color-mix(in hsl, canvasText, transparent 80%);
+    background: light-dark(hsl(0 0% 100% / 0.8), hsl(0 0% 0% / 0.8));
+    backdrop-filter: blur(8px);
+    display: grid;
+    place-items: center;
+    text-decoration: none;
+    font-size: 1.25rem;
+    transition: border-color 0.2s;
+  }
+  .back-link:hover {
+    border-color: canvasText;
+  }
+
+  .theme-toggle {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 100;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid color-mix(in hsl, canvasText, transparent 80%);
+    background: light-dark(hsl(0 0% 100% / 0.8), hsl(0 0% 0% / 0.8));
+    backdrop-filter: blur(8px);
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    color: canvasText;
+    padding: 0;
+    transition: border-color 0.2s;
+  }
+
+  .theme-toggle:is(:hover, :focus-visible) {
+    border-color: canvasText;
+  }
+
+  .theme-toggle svg {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    transition: opacity 0.2s, transform 0.3s;
+  }
+
+  .theme-toggle__sun {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.5);
+  }
+
+  .theme-toggle__moon {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+
+  [data-theme='dark'] .theme-toggle__sun {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+
+  [data-theme='dark'] .theme-toggle__moon {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.5);
+  }
+
+  [data-theme='light'] .theme-toggle__sun {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.5);
+  }
+
+  [data-theme='light'] .theme-toggle__moon {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+}
+  </style>
+</head>
+<body>
+  <span class="arrow arrow--detail">
+    <span>leverage CSS grid<br/>stacking + position:sticky</span>
+    <svg viewBox="0 0 122 97" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M116.102 0.0996005C114.952 0.334095 112.7 1.53002 111.433 2.53834C110.869 2.98388 109.368 4.15635 108.077 5.11778C103.455 8.6352 102.61 9.40903 102.187 10.4877C101.39 12.5982 102.798 14.5914 105.097 14.5914C106.13 14.5914 108.241 13.7941 109.696 12.8561C110.424 12.3871 111.01 12.0823 111.01 12.1526C111.01 12.692 107.796 17.8274 106.2 19.8206C102.023 25.0733 95.6642 29.6928 86.2548 34.2889C81.0926 36.8214 77.4555 38.2753 73.9123 39.2367C71.7066 39.823 70.6507 39.9871 67.9053 40.0809C66.0516 40.1513 64.5499 40.1747 64.5499 40.1278C64.5499 40.0809 64.808 38.9788 65.1365 37.6891C65.465 36.3993 65.8404 34.1716 66.0047 32.7647C66.4505 28.3796 65.4884 24.2994 63.4704 22.2359C62.1564 20.8758 60.9363 20.3599 59.0121 20.3599C57.6043 20.3599 57.1115 20.4537 55.7975 21.1103C52.8878 22.5407 50.5648 25.9878 49.5089 30.4197C48.453 34.922 49.2742 38.0877 52.3481 41.1127C53.4744 42.2148 54.46 42.9183 55.9852 43.6921C57.1584 44.2549 58.1439 44.7473 58.1909 44.7708C58.5898 45.0053 54.5304 53.4705 52.0666 57.6211C47.4674 65.3125 39.3486 74.575 30.5728 82.0789C22.2427 89.2309 16.7285 92.4435 9.87677 94.1553C8.28116 94.554 7.13138 94.6478 4.2452 94.6478C1.17131 94.6712 0.608154 94.7181 0.608154 95.023C0.608154 95.234 1.19478 95.5857 2.13337 95.9609C3.54126 96.4768 3.96363 96.5472 7.41296 96.5237C10.5572 96.5237 11.4724 96.4299 13.1149 96.0078C21.7265 93.6863 31.1594 87.1908 42.6102 75.7006C49.2977 69.0175 52.5828 64.9373 56.1494 58.9343C58.0501 55.7217 60.6312 50.6801 61.7575 47.9365L62.5553 45.9902L64.0806 46.1543C71.3547 46.9047 77.7136 45.3101 88.3667 40.034C96.2274 36.1414 101.976 32.3426 106.505 28.0748C108.617 26.0816 111.855 22.2828 112.794 20.7117C113.028 20.313 113.286 19.9847 113.357 19.9847C113.427 19.9847 113.662 20.782 113.873 21.72C114.084 22.6814 114.647 24.276 115.093 25.2609C115.82 26.8085 116.008 27.043 116.454 26.9727C116.876 26.9258 117.228 26.4333 117.956 24.9795C119.317 22.2828 119.833 20.2661 120.772 13.8879C121.757 7.25168 121.781 4.4143 120.889 2.56179C119.95 0.615488 118.12 -0.322489 116.102 0.0996005ZM60.7016 25.7767C61.4525 26.9023 61.8279 29.2942 61.6637 31.9205C61.4759 34.7813 60.5139 38.9788 60.0681 38.9788C59.5284 38.9788 57.1584 37.6422 56.2198 36.8214C54.8354 35.6021 54.3426 34.2889 54.5538 32.2957C54.8589 29.2473 56.1964 26.2223 57.5808 25.3547C58.7306 24.6512 60.0681 24.8388 60.7016 25.7767Z" fill="currentColor"></path>
+    </svg>
+  </span>
+  <div class="scene">
+    <div class="container">
+      <header>
+        <h1 class="fluid">
+          <span>scroll.</span><span>supply</span>
+        </h1>
+        <span class="arrow arrow--instruction">
+          <span>scroll for the effect</span>
+          <svg viewBox="0 0 122 97" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M116.102 0.0996005C114.952 0.334095 112.7 1.53002 111.433 2.53834C110.869 2.98388 109.368 4.15635 108.077 5.11778C103.455 8.6352 102.61 9.40903 102.187 10.4877C101.39 12.5982 102.798 14.5914 105.097 14.5914C106.13 14.5914 108.241 13.7941 109.696 12.8561C110.424 12.3871 111.01 12.0823 111.01 12.1526C111.01 12.692 107.796 17.8274 106.2 19.8206C102.023 25.0733 95.6642 29.6928 86.2548 34.2889C81.0926 36.8214 77.4555 38.2753 73.9123 39.2367C71.7066 39.823 70.6507 39.9871 67.9053 40.0809C66.0516 40.1513 64.5499 40.1747 64.5499 40.1278C64.5499 40.0809 64.808 38.9788 65.1365 37.6891C65.465 36.3993 65.8404 34.1716 66.0047 32.7647C66.4505 28.3796 65.4884 24.2994 63.4704 22.2359C62.1564 20.8758 60.9363 20.3599 59.0121 20.3599C57.6043 20.3599 57.1115 20.4537 55.7975 21.1103C52.8878 22.5407 50.5648 25.9878 49.5089 30.4197C48.453 34.922 49.2742 38.0877 52.3481 41.1127C53.4744 42.2148 54.46 42.9183 55.9852 43.6921C57.1584 44.2549 58.1439 44.7473 58.1909 44.7708C58.5898 45.0053 54.5304 53.4705 52.0666 57.6211C47.4674 65.3125 39.3486 74.575 30.5728 82.0789C22.2427 89.2309 16.7285 92.4435 9.87677 94.1553C8.28116 94.554 7.13138 94.6478 4.2452 94.6478C1.17131 94.6712 0.608154 94.7181 0.608154 95.023C0.608154 95.234 1.19478 95.5857 2.13337 95.9609C3.54126 96.4768 3.96363 96.5472 7.41296 96.5237C10.5572 96.5237 11.4724 96.4299 13.1149 96.0078C21.7265 93.6863 31.1594 87.1908 42.6102 75.7006C49.2977 69.0175 52.5828 64.9373 56.1494 58.9343C58.0501 55.7217 60.6312 50.6801 61.7575 47.9365L62.5553 45.9902L64.0806 46.1543C71.3547 46.9047 77.7136 45.3101 88.3667 40.034C96.2274 36.1414 101.976 32.3426 106.505 28.0748C108.617 26.0816 111.855 22.2828 112.794 20.7117C113.028 20.313 113.286 19.9847 113.357 19.9847C113.427 19.9847 113.662 20.782 113.873 21.72C114.084 22.6814 114.647 24.276 115.093 25.2609C115.82 26.8085 116.008 27.043 116.454 26.9727C116.876 26.9258 117.228 26.4333 117.956 24.9795C119.317 22.2828 119.833 20.2661 120.772 13.8879C121.757 7.25168 121.781 4.4143 120.889 2.56179C119.95 0.615488 118.12 -0.322489 116.102 0.0996005ZM60.7016 25.7767C61.4525 26.9023 61.8279 29.2942 61.6637 31.9205C61.4759 34.7813 60.5139 38.9788 60.0681 38.9788C59.5284 38.9788 57.1584 37.6422 56.2198 36.8214C54.8354 35.6021 54.3426 34.2889 54.5538 32.2957C54.8589 29.2473 56.1964 26.2223 57.5808 25.3547C58.7306 24.6512 60.0681 24.8388 60.7016 25.7767Z" fill="currentColor"></path>
+          </svg>
+        </span>
+      </header>
+      <main>
+        <section>
+          <div>
+            <article>
+              <h2 class="fluid">Create a scroll window effect from CSS layout</h2>
+              <p class="fluid">The trick here is to use CSS subgrid + position: sticky.</p>
+            </article>
+          </div>
+          <div>
+            <img src="https://assets.codepen.io/605876/hoodie-charcoal.png" alt="" />
+          </div>
+        </section>
+        <section>
+          <div>
+            <article>
+              <h2 class="fluid">Overlap and stack elements with CSS grid</h2>
+              <p class="fluid">You can stack elements by putting them in the same cell with grid-row and grid-column.</p>
+            </article>
+          </div>
+          <div>
+            <img src="https://assets.codepen.io/605876/hoodie-sand.png" alt="" />
+          </div>
+        </section>
+        <section>
+          <div>
+            <article>
+              <h2 class="fluid">Make use of outline to create a frame</h2>
+              <p class="fluid">Put an element in the second column spanning all rows. Inset it and give it a big outline.</p>
+            </article>
+          </div>
+          <div>
+            <img src="https://assets.codepen.io/605876/hoodie-gray.png" alt="" />
+          </div>
+        </section>
+        <section>
+          <div>
+            <article>
+              <h2 class="fluid">Finish it off with sticky positioning</h2>
+              <p class="fluid">Stick the frame and backdrop whilst scrolling the content.</p>
+            </article>
+          </div>
+          <div>
+            <img src="https://assets.codepen.io/605876/hoodie-forest.png" alt="" />
+          </div>
+        </section>
+        <div class="backdrop"></div>
+        <div class="window">
+          <div class="frame"></div>
+        </div>
+        <div class="backdrop-shadow"></div>
+      </main>
+      <section class="footer">
+        <p class="fluid">fin.</p>
+        <footer>
+          <span aria-hidden="true">&#x0CA5;&#x25CF;&#x0CA5;</span>&nbsp;&copy; jhey '25
+        </footer>
+      </section>
+    </div>
+    <!-- sticky frames -->
+    <div class="stickies">
+      <main>
+        <div class="backdrop">
+          <div class="backdrop__frame"></div>
+          <div class="backdrop__track">
+            <div><img src="https://assets.codepen.io/605876/hoodie-charcoal.png" alt="" /></div>
+            <div><img src="https://assets.codepen.io/605876/hoodie-sand.png" alt="" /></div>
+            <div><img src="https://assets.codepen.io/605876/hoodie-gray.png" alt="" /></div>
+            <div><img src="https://assets.codepen.io/605876/hoodie-forest.png" alt="" /></div>
+          </div>
+        </div>
+      </main>
+    </div>
+    <!-- dummy content that scrolls along -->
+    <div class="dummy">
+      <header>
+        <h1 class="fluid">
+          <span>scroll.</span><span>supply</span>
+        </h1>
+      </header>
+      <main>
+        <section>
+          <div><h2>A</h2></div>
+          <div><img src="https://assets.codepen.io/605876/hoodie-charcoal.png" alt="" /></div>
+        </section>
+        <section>
+          <div><h2>B</h2></div>
+          <div><img src="https://assets.codepen.io/605876/hoodie-sand.png" alt="" /></div>
+        </section>
+        <section>
+          <div><h2>C</h2></div>
+          <div><img src="https://assets.codepen.io/605876/hoodie-gray.png" alt="" /></div>
+        </section>
+        <section>
+          <div><h2>D</h2></div>
+          <div><img src="https://assets.codepen.io/605876/hoodie-forest.png" alt="" /></div>
+        </section>
+      </main>
+      <section class="footer">
+        <p class="fluid">fin.</p>
+        <footer>
+          <span aria-hidden="true">&#x0CA5;&#x25CF;&#x0CA5;</span>&nbsp;&copy; jhey '25
+        </footer>
+      </section>
+    </div>
+    <div class="stickies">
+      <main>
+        <div class="window">
+          <div class="frame"></div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Back to main + theme toggle -->
+  <a class="back-link" href="index.html" aria-label="Back to main page">&larr;</a>
+  <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+    <svg class="theme-toggle__sun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+    </svg>
+    <svg class="theme-toggle__moon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+    </svg>
+  </button>
+
+  <script>
+    // Theme toggle
+    const toggle = document.getElementById('theme-toggle');
+    const root = document.documentElement;
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) root.dataset.theme = savedTheme;
+
+    toggle.addEventListener('click', () => {
+      const current = root.dataset.theme;
+      let next;
+      if (!current || current === 'system') {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        next = prefersDark ? 'light' : 'dark';
+      } else if (current === 'dark') {
+        next = 'light';
+      } else {
+        next = 'dark';
+      }
+      if (document.startViewTransition) {
+        document.startViewTransition(() => { root.dataset.theme = next; });
+      } else {
+        root.dataset.theme = next;
+      }
+      localStorage.setItem('theme', next);
+    });
+  </script>
+</body>
+</html>
