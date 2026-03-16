@@ -1,6 +1,6 @@
 @import url('https://unpkg.com/normalize.css') layer(normalize);
 
-@layer normalize, base, demo, form, toc, transitions, alignment, theme-toggle, pricing-toggle, morphing-faq, course-cards;
+@layer normalize, base, demo, form, toc, transitions, alignment, theme-toggle, pricing-toggle, skill-panels, morphing-faq, course-cards;
 
 @layer alignment {
   [data-align='right'] {
@@ -735,7 +735,7 @@
   }
 
   .control .premium::before {
-    content: 'Premium';
+    content: '';
     position: absolute;
     left: 50%;
     top: 50%;
@@ -793,6 +793,81 @@
     scale: 0.75;
     transform-origin: -65% 150%;
     border-radius: 100px;
+  }
+}
+
+/* ===== Skill Panels (connected to pricing toggle) ===== */
+@layer skill-panels {
+  .skill-panels {
+    width: 100%;
+    max-width: 520px;
+    position: relative;
+    min-height: 220px;
+  }
+
+  .skill-panel {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-radius: 16px;
+    border: 1px solid color-mix(in hsl, canvasText, transparent 80%);
+    background: light-dark(hsl(0 0% 98%), hsl(0 0% 6%));
+  }
+
+  .skill-panel.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    position: relative;
+  }
+
+  .skill-panel__header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .skill-panel__header svg {
+    flex-shrink: 0;
+    color: light-dark(hsl(10 90% 50%), hsl(10 80% 60%));
+  }
+
+  .skill-panel__header h3 {
+    margin: 0;
+    font-size: 1.15rem;
+  }
+
+  .skill-panel p {
+    margin: 0;
+    font-size: 0.925rem;
+    line-height: 1.6;
+    opacity: 0.8;
+  }
+
+  .skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0.25rem 0 0;
+  }
+
+  .skill-tags li {
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.3rem 0.7rem;
+    border-radius: 100px;
+    background: light-dark(hsl(0 0% 90%), hsl(0 0% 16%));
+    color: light-dark(hsl(0 0% 30%), hsl(0 0% 70%));
+    white-space: nowrap;
   }
 }
 
