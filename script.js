@@ -1,3 +1,40 @@
+// Theme toggle
+const toggle = document.getElementById('theme-toggle');
+const root = document.documentElement;
+
+// Check for saved preference or default to system
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme) {
+  root.dataset.theme = savedTheme;
+}
+
+toggle.addEventListener('click', () => {
+  const current = root.dataset.theme;
+  let next;
+
+  if (!current || current === 'system') {
+    // Detect current system preference and go opposite
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    next = prefersDark ? 'light' : 'dark';
+  } else if (current === 'dark') {
+    next = 'light';
+  } else {
+    next = 'dark';
+  }
+
+  // Use view transitions if available
+  if (document.startViewTransition) {
+    document.startViewTransition(() => {
+      root.dataset.theme = next;
+    });
+  } else {
+    root.dataset.theme = next;
+  }
+
+  localStorage.setItem('theme', next);
+});
+
+// Generate table of contents
 function generateTableOfContents() {
   const tocElement = document.querySelector('table-of-contents');
   if (!tocElement) return;
@@ -16,14 +53,18 @@ function generateTableOfContents() {
       const item = items[index];
       const level = parseInt(item.tagName.charAt(1));
 
-      if (level < currentLevel) break;
+      if (level < currentLevel) {
+        break;
+      }
 
       if (level === currentLevel) {
         const listItem = document.createElement('li');
         const link = document.createElement('a');
 
         const id = item.id || item.textContent.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
-        if (!item.id) item.id = id;
+        if (!item.id) {
+          item.id = id;
+        }
 
         link.href = `#${id}`;
         link.textContent = item.textContent.trim();
@@ -31,6 +72,7 @@ function generateTableOfContents() {
         listItem.appendChild(link);
         index++;
 
+        // Check if there are nested items
         if (index < items.length) {
           const nextLevel = parseInt(items[index].tagName.charAt(1));
           if (nextLevel > currentLevel) {
@@ -49,6 +91,7 @@ function generateTableOfContents() {
     return { list, nextIndex: index };
   };
 
+  // Create nav element with proper accessibility
   const nav = document.createElement('nav');
   nav.setAttribute('aria-label', 'Table of Contents');
 
@@ -58,26 +101,21 @@ function generateTableOfContents() {
 
   const result = buildTOC(headings, 0, 2);
   nav.appendChild(result.list);
-
   const split = document.createElement('hr');
   split.classList.add('split');
   nav.appendChild(split);
-
   const backToTop = document.createElement('div');
   backToTop.classList.add('back-to-top');
   backToTop.innerHTML = `
-    <a aria-label="Back to Top" href="#pre">
-      top <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-        <path stroke-linecap="round" stroke-linejoin="round" d="m11.99 7.5 3.75-3.75m0 0 3.75 3.75m-3.75-3.75v16.499H4.49" />
-      </svg>
-    </a>
+  <a aria-label="Back to Top" href="#pre">
+  top <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+    <path stroke-linecap="round" stroke-linejoin="round" d="m11.99 7.5 3.75-3.75m0 0 3.75 3.75m-3.75-3.75v16.499H4.49" />
+  </svg>
+  </a>
   `;
-  nav.appendChild(backToTop);
 
+  nav.appendChild(backToTop);
   tocElement.appendChild(nav);
 }
 
 generateTableOfContents();
-
-// Set default alignment
-document.documentElement.dataset.align = 'right';

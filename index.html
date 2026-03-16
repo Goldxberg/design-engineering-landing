@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-align="right">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Where Product Design Meets Systems Thinking</title>
-  <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
@@ -17,7 +17,9 @@
       <div class="author">
         <div class="author-info">
           <img src="https://assets.codepen.io/605876/headshot--square.jpeg" alt="Jhey Tompkins" />
-          <span>Jhey Tompkins</span>
+          <span>
+            Jhey Tompkins
+          </span>
         </div>
       </div>
     </header>
@@ -48,8 +50,10 @@
         <section id="quality">
           <h2>Quality</h2>
           <p>Quality is a defining feature of user experience in web development. Design engineers ensure that every component is consistent, performant, and accessible, embedding these principles from the earliest stages of design and development. This approach guarantees that products feel polished, responsive, and reliable across all devices and user scenarios.</p>
+
           <h3>Performance</h3>
           <p>Performance is a critical aspect of user satisfaction. Teams focus on optimizing load times, minimizing rendering delays, and ensuring smooth transitions. Techniques such as lazy loading, code splitting, and modular component structures reduce unnecessary computational overhead. By addressing performance from the outset, design engineers prevent slow interactions that can frustrate users and reduce engagement, ensuring a product feels responsive and intuitive.</p>
+
           <h3>Accessibility</h3>
           <p>Accessibility ensures that products are usable by people of all abilities. Design engineers integrate semantic HTML, ARIA attributes, keyboard navigation, and high-contrast visuals into every component. Beyond compliance, inclusive design considers a variety of user needs, including different devices, contexts, and abilities, creating experiences that are genuinely welcoming and equitable. Accessibility is embedded as a core principle rather than an afterthought, improving usability for all users while enhancing the product's overall quality.</p>
         </section>
@@ -105,7 +109,9 @@
                 <label class="sr-only" for="waitlist-email">Email Address</label>
                 <input autocomplete="off" id="waitlist-email" name="email" type="email" placeholder="Email" required="">
               </div>
-              <button aria-label="Join" type="submit">Join</button>
+              <button aria-label="Join" type="submit">
+                Join
+              </button>
             </div>
             <div>
               <input type="checkbox" name="newsletter" id="newsletter" checked="">
@@ -115,9 +121,40 @@
         </div>
       </div>
       <hr/>
-      <p>ʕ•ᴥ•ʔ © Jhey Tompkins 2025</p>
+      <p>&#x0CA5;&#x25CF;&#x0CA5; &copy; Jhey Tompkins 2025</p>
     </footer>
   </div>
+  <a
+    aria-label="Follow Jhey"
+    class="bear-link"
+    href="https://twitter.com/intent/follow?screen_name=jh3yy"
+    target="_blank"
+    rel="noreferrer noopener"
+  >
+    <svg
+      class="w-9"
+      viewBox="0 0 969 955"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle cx="161.191" cy="320.191" r="133.191" stroke="currentColor" stroke-width="20"></circle>
+      <circle cx="806.809" cy="320.191" r="133.191" stroke="currentColor" stroke-width="20"></circle>
+      <circle cx="695.019" cy="587.733" r="31.4016" fill="currentColor"></circle>
+      <circle cx="272.981" cy="587.733" r="31.4016" fill="currentColor"></circle>
+      <path d="M564.388 712.083C564.388 743.994 526.035 779.911 483.372 779.911C440.709 779.911 402.356 743.994 402.356 712.083C402.356 680.173 440.709 664.353 483.372 664.353C526.035 664.353 564.388 680.173 564.388 712.083Z" fill="currentColor"></path>
+      <rect x="310.42" y="448.31" width="343.468" height="51.4986" fill="#FF1E1E"></rect>
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M745.643 288.24C815.368 344.185 854.539 432.623 854.539 511.741H614.938V454.652C614.938 433.113 597.477 415.652 575.938 415.652H388.37C366.831 415.652 349.37 433.113 349.37 454.652V511.741L110.949 511.741C110.949 432.623 150.12 344.185 219.845 288.24C289.57 232.295 384.138 200.865 482.744 200.865C581.35 200.865 675.918 232.295 745.643 288.24Z" fill="currentColor"></path>
+    </svg>
+  </a>
+  <!-- Theme toggle button -->
+  <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+    <svg class="theme-toggle__sun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+    </svg>
+    <svg class="theme-toggle__moon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+    </svg>
+  </button>
   <script src="script.js"></script>
 </body>
 </html>

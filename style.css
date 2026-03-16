@@ -1,6 +1,6 @@
 @import url('https://unpkg.com/normalize.css') layer(normalize);
 
-@layer normalize, base, demo, form, toc, transitions, alignment;
+@layer normalize, base, demo, form, toc, transitions, alignment, theme-toggle;
 
 @layer alignment {
   [data-align='right'] {
@@ -27,6 +27,7 @@
 
 @layer transitions {
   table-of-contents {
+    scroll-target-group: auto;
     a {
       transition-property: color;
       transition-duration: 0.26s;
@@ -41,7 +42,6 @@
     nav > ol > li:first-of-type {
       anchor-name: --active;
     }
-
     :not([href='#pre']):target-current {
       anchor-name: --active;
       color: light-dark(var(--accent-light), var(--accent-dark));
@@ -68,6 +68,11 @@
       transition-property: top, left, opacity;
       transition-duration: 0.26s;
       transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1);
+
+      @supports (corner-shape: squircle) {
+        corner-shape: squircle;
+        border-radius: 100px;
+      }
     }
   }
 }
@@ -134,6 +139,7 @@
     nav > ol {
       padding: 0;
     }
+
     nav a {
       display: block;
       padding-block: 0.25rem;
@@ -334,6 +340,27 @@
     z-index: -1;
   }
 
+  .bear-link {
+    color: canvasText;
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    width: 48px;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    opacity: 0.8;
+    z-index: 10;
+  }
+
+  :where(.x-link, .bear-link):is(:hover, :focus-visible) {
+    opacity: 1;
+  }
+
+  .bear-link svg {
+    width: 75%;
+  }
+
   /* Utilities */
   .sr-only {
     position: absolute;
@@ -454,5 +481,67 @@
     gap: 0.5rem;
     accent-color: light-dark(var(--accent-light), var(--accent-dark));
     font-size: 0.75rem;
+  }
+}
+
+@layer theme-toggle {
+  .theme-toggle {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 100;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid color-mix(in hsl, canvasText, transparent 80%);
+    background: light-dark(hsl(0 0% 100% / 0.8), hsl(0 0% 0% / 0.8));
+    backdrop-filter: blur(8px);
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    color: canvasText;
+    padding: 0;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .theme-toggle:is(:hover, :focus-visible) {
+    border-color: light-dark(var(--accent-light), var(--accent-dark));
+  }
+
+  .theme-toggle svg {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    transition: opacity 0.2s, transform 0.3s;
+  }
+
+  .theme-toggle__sun {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.5);
+  }
+
+  .theme-toggle__moon {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+
+  [data-theme='dark'] .theme-toggle__sun {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+
+  [data-theme='dark'] .theme-toggle__moon {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.5);
+  }
+
+  [data-theme='light'] .theme-toggle__sun {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.5);
+  }
+
+  [data-theme='light'] .theme-toggle__moon {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
   }
 }
