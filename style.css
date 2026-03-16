@@ -1229,24 +1229,68 @@
   }
 }
 
-/* PiP Video CTA */
-.pip-cta {
+/* Examples / I Also Create Websites */
+.examples-section {
   text-align: center;
-  padding: 2rem 1rem;
+  padding: 2rem 0;
 }
 
-.pip-cta__link {
+.examples-section > p {
+  margin-bottom: 2rem;
+  opacity: 0.7;
+}
+
+.examples-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  text-align: left;
+}
+
+.example-card {
+  display: block;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid color-mix(in hsl, canvasText, transparent 80%);
+  background: light-dark(hsl(0 0% 98%), hsl(0 0% 8%));
+  text-decoration: none;
+  color: canvasText;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.example-card:hover {
+  border-color: color-mix(in hsl, canvasText, transparent 40%);
+  transform: translateY(-2px);
+}
+
+.example-card__icon {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.example-card h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+}
+
+.example-card p {
+  margin: 0;
+  font-size: 0.875rem;
+  opacity: 0.7;
+  line-height: 1.5;
+}
+
+.example-card code {
+  font-size: 0.8rem;
+  background: light-dark(hsl(0 0% 90%), hsl(0 0% 20%));
+  padding: 0.1rem 0.3rem;
+  border-radius: 3px;
+}
+
+.example-card__link {
   display: inline-block;
   margin-top: 1rem;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  background: light-dark(hsl(10 90% 50%), hsl(10 80% 60%));
-  color: #fff;
-  text-decoration: none;
+  font-size: 0.875rem;
   font-weight: 600;
-  transition: opacity 0.2s ease;
-}
-
-.pip-cta__link:hover {
-  opacity: 0.85;
+  color: light-dark(hsl(10 90% 50%), hsl(10 80% 60%));
 }

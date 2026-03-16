@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Curved Scrollbar Demo</title>
+  <meta name="description" content="A curved scrollbar demo using CSS animation-timeline and SVG paths">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Reddit+Mono:wght@200..900&display=swap');
+@import url('https://unpkg.com/normalize.css') layer(normalize);
+
+@layer normalize, base, demo, snapping;
+
+@layer snapping {
+  @supports (animation-timeline: scroll()) {
+    .scroller header,
+    .scroller footer {
+      scroll-snap-align: unset;
+    }
+    .scroller header {
+      --align: start;
+      animation: snap both linear reverse;
+      animation-timeline: scroll(nearest);
+      animation-range: calc(var(--padding, 0) * 1px) 0;
+    }
+    .scroller footer {
+      --align: end;
+      animation: snap both linear;
+      animation-timeline: scroll(nearest);
+      animation-range: calc(100% - (var(--padding, 0) * 1px)) 100%;
+    }
+    @keyframes snap {
+      to {
+        scroll-snap-align: var(--align, start);
+      }
+    }
+  }
+}
+
+@layer demo {
+  :root {
+    --size: 300px;
+    --radius: 32;
+    --padding: 64px;
+    --bg: hsl(180 0% 33%);
+    --bar: hsl(0 0% 100% / 0.5);
+    --panel: hsl(20 60% 50%);
+    timeline-scope: --scroller;
+  }
+  .scroller {
+    position: relative;
+    width: clamp(300px, 50vmin, 600px);
+    aspect-ratio: 3 / 4;
+    resize: both;
+    overflow: hidden;
+    padding: 1rem;
+  }
+  .scroller img {
+    width: 100%;
+    object-fit: cover;
+    border-radius: 6px;
+    filter: contrast(1.5) grayscale(1);
+  }
+  .bar__thumb, .bar__track { opacity: 0; transition: opacity 0.2s; }
+  [data-rounded-scroll='true'] .scroller :is(.bar__thumb, .bar__track) { opacity: 1; }
+  .scroller > svg {
+    position: absolute;
+    top: 1rem;
+    bottom: 1rem;
+    right: 1rem;
+    pointer-events: none;
+    width: calc(var(--radius) * 2px);
+    overflow: visible !important;
+    z-index: 2;
+  }
+  [data-rounded-scroll='true'] .scroller div::-webkit-scrollbar { display: none; }
+  [data-rounded-scroll='true'] div::-webkit-scrollbar { display: none; opacity: 0 !important; }
+  [data-rounded-scroll='true'] .scroller div { scrollbar-width: none; -ms-overflow-style: none; }
+  .scroller path { stroke-width: calc(var(--stroke-width) * 1px); }
+  .bar__thumb {
+    stroke: color-mix(in hsl, var(--color, #fff), #0000 calc((1 - var(--bar-alpha, 0.5)) * 100%));
+    stroke-dasharray: var(--thumb-size) var(--track-length);
+  }
+  @supports (animation-timeline: scroll()) {
+    .bar__thumb {
+      animation: scroll both linear;
+      animation-timeline: --scroller;
+    }
+  }
+  .bar__track { stroke: hsl(0 0% 100% / var(--track-alpha, 0)); }
+  .scroller > div {
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+    background: light-dark(#fff, #000);
+    border-radius: calc(var(--radius) * 1px);
+    display: grid;
+    grid-auto-flow: row;
+    gap: 0;
+    margin: 0;
+    padding: calc(var(--padding) * 1px) 0;
+    list-style-type: none;
+    scroll-snap-type: y mandatory;
+    scroll-timeline: --scroller;
+    scroll-behavior: smooth;
+    outline: 1px solid color-mix(in lch, canvas, canvasText);
+    outline-offset: 1px;
+    &::after {
+      content: '';
+      height: calc(var(--stroke, 4) * 1px);
+      width: clamp(40px, 50%, 80px);
+      background: canvasText;
+      border-radius: 100px;
+      position: absolute;
+      bottom: calc(1rem + 4px);
+      left: 50%;
+      translate: -50% -50%;
+    }
+  }
+  .scroller > div > * { padding-inline: 1.25rem; }
+  .scroller main :not(:last-child) { margin-bottom: 2rem; }
+  .scroller main p:last-of-type { opacity: 0.4; }
+  .scroller p { opacity: 0.6; font-size: 0.875rem; }
+  .scroller header {
+    scroll-snap-align: start;
+    margin-block: 2rem;
+    text-transform: uppercase;
+    font-family: 'Reddit Mono', monospace;
+    div { margin-block: 4rem; }
+    h1 { font-size: 1.25rem; font-weight: 300; margin: 0; }
+    p { margin: 0; font-size: 1rem; font-weight: 300; }
+  }
+  .scroller footer {
+    scroll-snap-align: end;
+    padding-inline: 1rem;
+    text-align: center;
+    padding-block: 1rem;
+    font-size: 0.75rem;
+    opacity: 0.5;
+  }
+}
+
+@layer base {
+  :root {
+    --font-size-min: 16; --font-size-max: 20;
+    --font-ratio-min: 1.2; --font-ratio-max: 1.33;
+    --font-width-min: 375; --font-width-max: 1500;
+  }
+  html { color-scheme: light dark; }
+  [data-theme='light'] { color-scheme: light only; }
+  [data-theme='dark'] { color-scheme: dark only; }
+  :where(.fluid) {
+    --fluid-min: calc(var(--font-size-min) * pow(var(--font-ratio-min), var(--font-level, 0)));
+    --fluid-max: calc(var(--font-size-max) * pow(var(--font-ratio-max), var(--font-level, 0)));
+    --fluid-preferred: calc((var(--fluid-max) - var(--fluid-min)) / (var(--font-width-max) - var(--font-width-min)));
+    --fluid-type: clamp((var(--fluid-min) / 16) * 1rem, ((var(--fluid-min) / 16) * 1rem) - (((var(--fluid-preferred) * var(--font-width-min)) / 16) * 1rem) + (var(--fluid-preferred) * var(--variable-unit, 100vi)), (var(--fluid-max) / 16) * 1rem);
+    font-size: var(--fluid-type);
+  }
+  *, *:after, *:before { box-sizing: border-box; }
+  body {
+    background: light-dark(#fff, #000);
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+    font-family: 'SF Pro Text', 'SF Pro Icons', 'AOS Icons', 'Helvetica Neue', Helvetica, Arial, sans-serif, system-ui;
+  }
+  body::before {
+    --size: 45px;
+    --line: color-mix(in hsl, canvasText, transparent 70%);
+    content: '';
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    background: linear-gradient(90deg, var(--line) 1px, transparent 1px var(--size)) 50% 50% / var(--size) var(--size), linear-gradient(var(--line) 1px, transparent 1px var(--size)) 50% 50% / var(--size) var(--size);
+    mask: linear-gradient(-20deg, transparent 50%, white);
+    top: 0;
+    pointer-events: none;
+    z-index: -1;
+  }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;
+  }
+}
+  </style>
+</head>
+<body>
+
+  <nav style="position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1.5rem;z-index:100;background:light-dark(rgba(255,255,255,0.8),rgba(0,0,0,0.8));backdrop-filter:blur(10px);">
+    <a href="index.html" style="color:canvasText;text-decoration:none;font-size:0.875rem;">&larr; Back</a>
+    <button id="theme-toggle" style="background:none;border:1px solid color-mix(in hsl,canvasText,transparent 70%);border-radius:6px;padding:0.4rem 0.8rem;color:canvasText;cursor:pointer;font-size:0.875rem;">Toggle Theme</button>
+  </nav>
+
+  <div class="scroller">
+    <svg class="scroller__bar bar" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
+      <path class="bar__thumb" fill="none" stroke-linecap="round" />
+      <path class="bar__track" fill="none" stroke-linecap="round" />
+    </svg>
+    <div>
+      <header>
+        <div>
+          <h1>023: curved scroller.</h1>
+          <p>Jhey Tompkins.</p>
+        </div>
+        <img src="https://picsum.photos/1280/720?random=12" alt="" />
+      </header>
+      <main>
+        <p>Lorem, ipsum, dolor sit amet consectetur adipisicing elit. Suscipit in voluptatum, ducimus labore iste consectetur laboriosam officiis aliquid similique reprehenderit, consequatur distinctio consequuntur nam magnam blanditiis reiciendis eligendi laudantium a.</p>
+        <p>Dignissimos, nisi tenetur doloremque esse cum amet delectus cupiditate natus quo illum quisquam perspiciatis ipsa maiores aut soluta, facilis sunt rem eius. Alias, illum, cumque. Temporibus doloremque praesentium in, consectetur.</p>
+        <p>Molestias voluptas architecto atque maiores, laboriosam, dolorem commodi autem, id, ipsa praesentium rerum inventore! Optio maiores nulla impedit, sapiente similique, voluptas placeat hic quas dicta a voluptate minima alias aliquam?</p>
+        <img src="https://picsum.photos/1280/720?random=48" alt="" />
+        <p>Suscipit repudiandae, consectetur ratione quo, ipsa inventore doloremque quibusdam sit iusto, obcaecati natus! Tempore, tenetur culpa, mollitia consequuntur necessitatibus minima aliquid in recusandae, exercitationem nulla voluptates atque quaerat, doloremque illum.</p>
+        <p>Quibusdam quas, soluta quisquam nobis porro odio sit, maxime libero, optio cumque, sint! Enim, atque, velit. Iste quisquam minus deleniti quasi saepe! Saepe assumenda iste accusantium rem, sunt repudiandae quae!</p>
+        <p>Mollitia quod fuga ex, consequatur saepe. Id laboriosam aspernatur iusto unde quo. Optio molestiae maxime officia blanditiis voluptate, quasi impedit aperiam corrupti nihil sit doloremque dolorem harum necessitatibus expedita laboriosam.</p>
+        <p>Deleniti molestiae maxime ullam officia natus, eaque nisi numquam, aliquam sapiente doloribus atque obcaecati illum vitae modi labore, eligendi hic illo earum doloremque. Deserunt ut aliquam a aliquid, dolores, magni.</p>
+        <img src="https://picsum.photos/1280/720?random=36" alt="" />
+        <p>Nesciunt dolor fugiat excepturi sunt molestias quis quam consequatur, ea, eos officiis? Veniam totam, quas quasi eos quibusdam, dolorem deleniti minus aperiam, nobis sapiente sit, necessitatibus delectus quidem. Voluptate, nemo!</p>
+        <p>Qui fugit rerum harum, odio eos esse dicta dolore atque itaque voluptatem, doloribus ullam tempora quidem, accusantium quae, incidunt natus error fuga inventore expedita autem veniam in sequi iure. Officia.</p>
+        <p>Ab mollitia, illum. Iusto quam enim, in sapiente sed impedit nesciunt pariatur delectus asperiores officia hic ratione quasi eum quidem facere quaerat ducimus dolor totam omnis itaque sequi expedita optio?</p>
+        <p>Find out how to do things like this and more by subscribing.</p>
+      </main>
+      <footer>
+        <p>The Craft of UI&nbsp;&copy;</p>
+      </footer>
+    </div>
+    <style id="scroller-frames"></style>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.0/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.0/dist/ScrollTrigger.min.js"></script>
+  <script>
+    let tl;
+    let configureTimeline;
+
+    const scroller = document.querySelector('.scroller');
+    const list = scroller.querySelector('div');
+    const bar = scroller.querySelector('.scroller__bar');
+    const track = scroller.querySelector('.bar__track');
+    const thumb = bar.querySelector('.bar__thumb');
+    const styles = scroller.querySelector('style');
+
+    const config = {
+      theme: 'dark',
+      show: true,
+      radius: 32,
+      scrollPadding: 60,
+      stroke: 5,
+      inset: 6,
+      trail: 20,
+      thumb: 70,
+      finish: 5,
+      alpha: 0.9,
+      track: 0,
+      color: '#f85922',
+      cornerLength: 0,
+      offsetCorner: -50,
+      offsetEnd: 30
+    };
+
+    let frames = [];
+
+    const syncBar = (scrollerBar) => {
+      const mid = config.radius;
+      const innerRad = Math.max(0, config.radius - (config.inset + config.stroke * 0.5));
+      const padTop = config.inset + config.stroke * 0.5;
+      const padLeft = config.radius * 2 - padTop;
+
+      bar.setAttribute('viewBox', `0 0 ${config.radius * 2} ${scrollerBar.target.offsetHeight}`);
+      scroller.style.setProperty('--stroke-width', config.stroke);
+
+      let d = ` M${mid - config.trail},${padTop} ${innerRad === 0 ? '' : `L${mid},${padTop}`} ${
+        innerRad === 0 ? `L${padLeft},${padTop}` : `a${innerRad},${innerRad} 0 0 1 ${innerRad} ${innerRad}`
+      }`;
+
+      thumb.setAttribute('d', d);
+      const cornerLength = Math.ceil(thumb.getTotalLength());
+      config.cornerLength = cornerLength;
+
+      d = ` M${mid - config.trail},${padTop} ${innerRad === 0 ? '' : `L${mid},${padTop}`} ${
+        innerRad === 0 ? `L${padLeft},${padTop}` : `a${innerRad},${innerRad} 0 0 1 ${innerRad} ${innerRad}`
+      } L${padLeft},${scrollerBar.target.offsetHeight - (config.inset + config.stroke * 0.5 + innerRad)} ${
+        innerRad === 0 ? `L${padLeft},${scrollerBar.target.offsetHeight - (config.inset + config.stroke * 0.5)}` : `a${innerRad},${innerRad} 0 0 1 ${-innerRad} ${innerRad}`
+      } L${mid - config.trail},${scrollerBar.target.offsetHeight - (config.inset + config.stroke * 0.5)} `;
+
+      thumb.setAttribute('d', d);
+      track.setAttribute('d', d);
+
+      scroller.style.setProperty('--track-length', Math.ceil(track.getTotalLength()));
+      scroller.style.setProperty('--track-start', cornerLength);
+      scroller.style.setProperty('--start', config.thumb * 2 + cornerLength);
+      scroller.style.setProperty('--destination', Math.ceil(track.getTotalLength()) - cornerLength + config.thumb);
+
+      frames = [
+        [0, config.thumb - config.finish - config.offsetEnd],
+        [Math.floor(config.scrollPadding / (list.scrollHeight - scroller.offsetHeight) * 100), (cornerLength + config.offsetCorner) * -1],
+        [100 - Math.floor(config.scrollPadding / (list.scrollHeight - scroller.offsetHeight) * 100), (Math.floor(track.getTotalLength()) - cornerLength - config.thumb - config.offsetCorner) * -1],
+        [100, (Math.floor(track.getTotalLength()) - config.finish - config.offsetEnd) * -1]
+      ];
+
+      styles.innerHTML = `
+        @keyframes scroll {
+          ${frames[0][0]}% { stroke-dashoffset: ${frames[0][1]};}
+          ${frames[1][0]}% { stroke-dashoffset: ${frames[1][1]};}
+          ${frames[2][0]}% { stroke-dashoffset: ${frames[2][1]};}
+          ${frames[3][0]}% { stroke-dashoffset: ${frames[3][1]};}
+        }
+      `;
+    };
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        syncBar(entry);
+        update();
+        if (configureTimeline && !CSS.supports('animation-timeline: scroll()')) configureTimeline();
+      }
+    });
+
+    resizeObserver.observe(scroller);
+
+    const update = () => {
+      document.documentElement.dataset.roundedScroll = config.show;
+      scroller.style.setProperty('--radius', config.radius);
+      scroller.style.setProperty('--padding', config.scrollPadding);
+      scroller.style.setProperty('--color', config.color);
+      scroller.style.setProperty('--thumb-size', config.thumb);
+      scroller.style.setProperty('--bar-alpha', config.alpha);
+      scroller.style.setProperty('--track-alpha', config.track);
+      scroller.style.setProperty('--destination', Math.ceil(track.getTotalLength()) - ((Math.ceil(track.getTotalLength()) - scroller.offsetHeight) * 0.5 + config.inset));
+      scroller.style.setProperty('--start', config.thumb * 2);
+      syncBar({ target: list });
+    };
+
+    syncBar({ target: scroller });
+
+    // GSAP fallback for browsers without animation-timeline support
+    if (!CSS.supports('(animation-timeline: scroll())')) {
+      configureTimeline = () => {
+        if (tl) tl.kill();
+        tl = gsap.to('.bar__thumb', {
+          scrollTrigger: { scroller: list, scrub: true },
+          ease: 'none',
+          keyframes: {
+            [`${frames[0][0]}`]: { strokeDashoffset: frames[0][1] },
+            [`${frames[1][0]}`]: { strokeDashoffset: frames[1][1] },
+            [`${frames[2][0]}`]: { strokeDashoffset: frames[2][1] },
+            [`${frames[3][0]}`]: { strokeDashoffset: frames[3][1] }
+          }
+        });
+      };
+      gsap.registerPlugin(ScrollTrigger);
+      configureTimeline();
+    }
+
+    // Theme toggle — shared with other pages via localStorage
+    const toggle = document.getElementById('theme-toggle');
+    const root = document.documentElement;
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) root.dataset.theme = savedTheme;
+
+    toggle.addEventListener('click', () => {
+      const current = root.dataset.theme;
+      let next;
+      if (!current || current === 'system') {
+        next = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'light' : 'dark';
+      } else {
+        next = current === 'dark' ? 'light' : 'dark';
+      }
+      if (document.startViewTransition) {
+        document.startViewTransition(() => { root.dataset.theme = next; });
+      } else {
+        root.dataset.theme = next;
+      }
+      localStorage.setItem('theme', next);
+    });
+  </script>
+</body>
+</html>
