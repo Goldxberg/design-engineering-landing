@@ -209,6 +209,40 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      padding: 0.3rem 0.75rem;
+      border-radius: 100px;
+      background: light-dark(hsl(145 60% 42%), hsl(145 50% 38%));
+      color: #fff;
+      animation: pulse-badge 2s ease-in-out infinite;
+    }
+
+    .status-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #fff;
+      animation: blink 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse-badge {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.85; }
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
     }
 
     .author {
@@ -1207,7 +1241,7 @@
   .course-list {
     display: grid;
     container-type: inline-size;
-    grid-template-columns: 10fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 10fr 1fr 1fr;
     gap: var(--card-gap);
     list-style-type: none;
     justify-content: center;
