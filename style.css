@@ -1,6 +1,6 @@
 @import url('https://unpkg.com/normalize.css') layer(normalize);
 
-@layer normalize, base, demo, form, toc, transitions, alignment, theme-toggle;
+@layer normalize, base, demo, form, toc, transitions, alignment, theme-toggle, pricing-toggle, course-cards;
 
 @layer alignment {
   [data-align='right'] {
@@ -543,5 +543,404 @@
   [data-theme='light'] .theme-toggle__moon {
     opacity: 1;
     transform: rotate(0deg) scale(1);
+  }
+}
+
+/* ===== Pricing Toggle (from CodePen vEEZxOM) ===== */
+@layer pricing-toggle {
+  .pricing-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 4rem;
+  }
+
+  .pricing-section h2 {
+    margin: 0;
+  }
+
+  .control .indicator {
+    position: absolute;
+    width: 50%;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    background: var(--toggle-primary);
+    border-radius: 100px;
+  }
+
+  .control .premium .indicator {
+    background: var(--toggle-primary);
+    left: 50%;
+    top: 0;
+    translate: -50% 0;
+  }
+
+  :root {
+    --toggle-shadow-color: 0deg 0% 63%;
+    --toggle-primary: light-dark(hsl(0 0% 10%), #fff);
+    --toggle-secondary: canvas;
+    --toggle-inactive: light-dark(hsl(0 0% 60%), hsl(0 0% 50%));
+    --toggle-duration: 0.22;
+    --toggle-drop-off: 0.4;
+    --toggle-ease: linear(
+      0 0%, 0.2342 12.49%, 0.4374 24.99%,
+      0.6093 37.49%, 0.6835 43.74%,
+      0.7499 49.99%, 0.8086 56.25%,
+      0.8593 62.5%, 0.9023 68.75%, 0.9375 75%,
+      0.9648 81.25%, 0.9844 87.5%,
+      0.9961 93.75%, 1 100%
+    );
+    --toggle-border: light-dark(hsl(0 0% 80%), hsl(0 0% 60%));
+
+    @media (prefers-color-scheme: dark) {
+      --toggle-shadow-color: 0deg 0% 0%;
+    }
+  }
+  [data-theme='dark'] {
+    --toggle-shadow-color: 0deg 0% 0%;
+  }
+  [data-theme='light'] {
+    --toggle-shadow-color: 0deg 0% 63%;
+  }
+
+  .control .premium:has(:checked)::before {
+    translate: -50% -250%;
+    scale: 0.85;
+  }
+  .control .premium:has(:checked) label span {
+    scale: 1;
+  }
+  .control .premium:has(:checked) .indicator {
+    background: var(--toggle-secondary);
+    clip-path: inset(0 0 0 0 round 100px);
+  }
+  .control .premium:has(:checked) label {
+    color: var(--toggle-inactive);
+    opacity: 0.75;
+  }
+  .control .premium:has(:nth-of-type(1):checked) label:nth-of-type(1),
+  .control .premium:has(:nth-of-type(2):checked) label:nth-of-type(2) {
+    color: var(--toggle-primary);
+    opacity: 1;
+  }
+  .control .premium:has(:nth-of-type(1):checked) .indicator {
+    translate: -100% 0;
+  }
+  .control .premium:has(:nth-of-type(2):checked) .indicator {
+    translate: 0 0;
+  }
+
+  .control label {
+    transition-property: color, opacity;
+    transition-duration: calc(var(--toggle-duration) * 1s);
+    transition-timing-function: var(--toggle-ease);
+  }
+
+  .control .control__track:not(:has(> :checked)) > label {
+    color: var(--toggle-primary);
+    opacity: var(--toggle-drop-off);
+  }
+  .control .control__track:not(:has(> :checked)) > .indicator {
+    translate: 100% 0;
+  }
+  .control .indicator {
+    transition: translate calc(var(--toggle-duration) * 1s) var(--toggle-ease);
+  }
+  .control .premium .indicator {
+    transition-property: translate, clip-path, background;
+    transition-duration: calc(var(--toggle-duration) * 1s);
+    transition-timing-function: var(--toggle-ease);
+    clip-path: inset(
+      73cqh calc(50% + 1px) calc(27cqh - 2px) calc(50% - 3px) round 100px
+    );
+  }
+  .control .premium::before {
+    transition-property: scale, translate;
+    transition-duration: calc(var(--toggle-duration) * 1s);
+    transition-timing-function: var(--toggle-ease);
+  }
+  .control .control__track:has(> :checked) .premium .indicator {
+    background: var(--toggle-inactive);
+  }
+  .control .control__track:has(> :checked) .premium label {
+    color: var(--toggle-inactive);
+  }
+
+  .control {
+    scale: 1.2;
+    letter-spacing: 0.5px;
+    position: relative;
+    width: 260px;
+    height: 38px;
+    aspect-ratio: 300 / 38;
+    background: var(--toggle-secondary);
+    border-radius: 100px;
+    border: 1px solid var(--toggle-border);
+    padding: 2px;
+    box-shadow: -0.1px 1px 1px hsl(var(--toggle-shadow-color) / 0.39),
+      -0.2px 3.2px 3.1px -0.4px hsl(var(--toggle-shadow-color) / 0.36),
+      -0.3px 5.7px 5.5px -0.8px hsl(var(--toggle-shadow-color) / 0.34),
+      -0.5px 9.3px 8.9px -1.2px hsl(var(--toggle-shadow-color) / 0.32),
+      -0.8px 14.8px 14.2px -1.6px hsl(var(--toggle-shadow-color) / 0.29),
+      -1.3px 23.1px 22.2px -2px hsl(var(--toggle-shadow-color) / 0.27),
+      -2px 35px 33.7px -2.4px hsl(var(--toggle-shadow-color) / 0.24),
+      -2.9px 51.2px 49.2px -2.8px hsl(var(--toggle-shadow-color) / 0.22),
+      -4.1px 72.6px 69.8px -3.2px hsl(var(--toggle-shadow-color) / 0.2),
+      -5.6px 100px 96.2px -3.6px hsl(var(--toggle-shadow-color) / 0.17);
+  }
+
+  .control .control__track {
+    display: grid;
+    place-items: center;
+    grid-template-columns: repeat(4, 1fr);
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+
+  .control .premium::before {
+    content: 'Premium';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    translate: -50% -80%;
+    color: var(--toggle-primary);
+    font-size: 0.75rem;
+    z-index: 2;
+  }
+
+  .control label {
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    font-size: 0.75rem;
+    color: var(--toggle-primary);
+    z-index: 2;
+  }
+
+  .control .control__track > label {
+    color: var(--toggle-secondary);
+  }
+
+  .control .premium {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    position: relative;
+    grid-template-columns: 1fr 1fr;
+    border: 1px solid #0000;
+    container-type: size;
+  }
+
+  .control .premium,
+  .control .control__track > label:nth-of-type(1) {
+    grid-column: span 2;
+  }
+
+  .control label span {
+    display: grid;
+    place-items: center;
+    height: 100%;
+    width: 100%;
+    transition: scale calc(var(--toggle-duration) * 1s) var(--toggle-ease);
+  }
+
+  .control .premium label:nth-of-type(1) span {
+    scale: 0.75;
+    transform-origin: 150% 150%;
+    border-radius: 100px;
+  }
+  .control .premium label:nth-of-type(2) span {
+    scale: 0.75;
+    transform-origin: -65% 150%;
+    border-radius: 100px;
+  }
+}
+
+/* ===== Course Cards (from CodePen XJWNMOO) ===== */
+@layer course-cards {
+  .courses-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 4rem;
+  }
+
+  .courses-section h2 {
+    margin: 0;
+    text-transform: lowercase;
+  }
+
+  .courses-intro {
+    width: 74ch;
+    max-width: 100%;
+    text-wrap: balance;
+    font-family: monospace;
+    margin-bottom: 2rem;
+    line-height: 1.5;
+    opacity: 0.8;
+    font-weight: 400;
+  }
+
+  .course-list :is(svg, h3) {
+    opacity: 0.6;
+    transition: opacity calc(var(--card-speed) * 1.2) var(--card-easing);
+  }
+
+  .course-list :is(a, p) {
+    opacity: 0;
+    transition: opacity calc(var(--card-speed) * 1.2) var(--card-easing);
+    width: fit-content;
+  }
+
+  .course-list img {
+    filter: grayscale(1) brightness(1.5);
+    scale: 1.1;
+    transition-property: filter, scale;
+    transition-duration: calc(var(--card-speed) * 1.2);
+    transition-timing-function: var(--card-easing);
+  }
+
+  .course-list [data-active='true'] :is(a, p, h3, svg) {
+    opacity: var(--card-opacity, 1);
+  }
+  .course-list [data-active='true'] :is(a, p) {
+    transition-delay: calc(var(--card-speed) * 0.25);
+  }
+
+  .course-list [data-active='true'] img {
+    filter: grayscale(0) brightness(1);
+    scale: 1;
+    transition-delay: calc(var(--card-speed) * 0.25);
+  }
+
+  .course-list article {
+    width: calc(var(--article-width) * 1px);
+    height: 100%;
+    position: absolute;
+    font-family: monospace;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding-inline: calc(var(--card-base) * 0.5 - 9px);
+    padding-bottom: 1rem;
+    overflow: hidden;
+  }
+
+  .course-list article h3 {
+    position: absolute;
+    top: 1rem;
+    left: calc(var(--card-base) * 0.5);
+    transform-origin: 0 50%;
+    rotate: 90deg;
+    font-size: 1rem;
+    font-weight: 300;
+    text-transform: uppercase;
+    font-family: monospace;
+    white-space: nowrap;
+    margin: 0;
+  }
+
+  .course-list article svg {
+    width: 18px;
+    fill: none;
+  }
+
+  .course-list article p {
+    font-size: 13px;
+    text-wrap: balance;
+    line-height: 1.25;
+    --card-opacity: 0.8;
+  }
+
+  .course-list article a {
+    position: absolute;
+    bottom: 1rem;
+    height: 18px;
+    line-height: 1;
+    color: inherit;
+  }
+
+  .course-list article a:is(:focus-visible, :hover) {
+    outline: none;
+  }
+
+  .course-list article a:is(:focus-visible, :hover) span {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .course-list article a span {
+    display: inline-block;
+    line-height: 18px;
+    translate: calc(var(--card-base) * 0.5);
+    font-weight: 500;
+  }
+
+  .course-list article img {
+    position: absolute;
+    pointer-events: none;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    mask: radial-gradient(100% 100% at 100% 0, #fff, #0000);
+  }
+
+  :root {
+    --card-gap: 8px;
+    --card-base: clamp(2rem, 8cqi, 80px);
+    --card-easing: linear(
+      0 0%,
+      0.1538 4.09%,
+      0.2926 8.29%,
+      0.4173 12.63%,
+      0.5282 17.12%,
+      0.6255 21.77%,
+      0.7099 26.61%,
+      0.782 31.67%,
+      0.8425 37%,
+      0.8887 42.23%,
+      0.9257 47.79%,
+      0.9543 53.78%,
+      0.9752 60.32%,
+      0.9883 67.11%,
+      0.9961 75%,
+      1 100%
+    );
+    --card-speed: 0.6s;
+  }
+
+  .course-list {
+    display: grid;
+    container-type: inline-size;
+    grid-template-columns: 10fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    gap: var(--card-gap);
+    list-style-type: none;
+    justify-content: center;
+    padding: 0;
+    height: clamp(300px, 40dvh, 474px);
+    margin: 0;
+    width: 820px;
+    max-width: 100%;
+    transition: grid-template-columns var(--card-speed) var(--card-easing);
+  }
+
+  .course-list li {
+    background: light-dark(#fff, #000);
+    position: relative;
+    overflow: hidden;
+    min-width: var(--card-base);
+    border-radius: 8px;
+    border: 1px solid color-mix(in hsl, canvas, canvasText 50%);
   }
 }
