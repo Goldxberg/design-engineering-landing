@@ -1,0 +1,83 @@
+function generateTableOfContents() {
+  const tocElement = document.querySelector('table-of-contents');
+  if (!tocElement) return;
+
+  const article = document.querySelector('article');
+  if (!article) return;
+
+  const headings = Array.from(article.querySelectorAll('h2, h3, h4, h5, h6'));
+  if (headings.length === 0) return;
+
+  const buildTOC = (items, startIndex = 0, currentLevel = 1) => {
+    const list = document.createElement('ol');
+    let index = startIndex;
+
+    while (index < items.length) {
+      const item = items[index];
+      const level = parseInt(item.tagName.charAt(1));
+
+      if (level < currentLevel) break;
+
+      if (level === currentLevel) {
+        const listItem = document.createElement('li');
+        const link = document.createElement('a');
+
+        const id = item.id || item.textContent.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+        if (!item.id) item.id = id;
+
+        link.href = `#${id}`;
+        link.textContent = item.textContent.trim();
+
+        listItem.appendChild(link);
+        index++;
+
+        if (index < items.length) {
+          const nextLevel = parseInt(items[index].tagName.charAt(1));
+          if (nextLevel > currentLevel) {
+            const result = buildTOC(items, index, currentLevel + 1);
+            listItem.appendChild(result.list);
+            index = result.nextIndex;
+          }
+        }
+
+        list.appendChild(listItem);
+      } else {
+        break;
+      }
+    }
+
+    return { list, nextIndex: index };
+  };
+
+  const nav = document.createElement('nav');
+  nav.setAttribute('aria-label', 'Table of Contents');
+
+  const heading = document.createElement('h2');
+  heading.textContent = 'Contents';
+  nav.appendChild(heading);
+
+  const result = buildTOC(headings, 0, 2);
+  nav.appendChild(result.list);
+
+  const split = document.createElement('hr');
+  split.classList.add('split');
+  nav.appendChild(split);
+
+  const backToTop = document.createElement('div');
+  backToTop.classList.add('back-to-top');
+  backToTop.innerHTML = `
+    <a aria-label="Back to Top" href="#pre">
+      top <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m11.99 7.5 3.75-3.75m0 0 3.75 3.75m-3.75-3.75v16.499H4.49" />
+      </svg>
+    </a>
+  `;
+  nav.appendChild(backToTop);
+
+  tocElement.appendChild(nav);
+}
+
+generateTableOfContents();
+
+// Set default alignment
+document.documentElement.dataset.align = 'right';
