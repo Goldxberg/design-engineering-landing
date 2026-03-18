@@ -1,91 +1,6 @@
 @import url('https://unpkg.com/normalize.css') layer(normalize);
 
-@layer normalize, base, demo, building-text, form, toc, transitions, alignment, theme-toggle, pricing-toggle, skill-panels, morphing-faq, course-cards;
-
-@layer building-text {
-  :root {
-    --cable: color-mix(in lch, canvasText, canvas 35%);
-    --claw: color-mix(in lch, canvasText, canvas 15%);
-    --head: color-mix(in lch, canvasText, canvas 25%);
-    --delay: 1s;
-    --speed: 2.4s;
-    --base-delay: 1;
-    --cross-delay: 0;
-    --cross-speed: 2.8;
-    --dot-delay: 0.8;
-    --dot-speed: 4.4;
-  }
-
-  .building-header {
-    position: relative;
-  }
-
-  .tagline {
-    --font-level: 6;
-    height: 1em;
-    overflow: visible !important;
-  }
-
-  .construct {
-    animation: slide-in var(--speed) var(--delay) ease-out both;
-  }
-  .claw {
-    animation: slide-out var(--speed) var(--delay) ease-in both;
-  }
-  .claw path {
-    animation: let-go var(--speed) var(--delay) ease-out both;
-  }
-
-  .construct--horizontal {
-    --delay: calc((var(--base-delay) + var(--cross-delay)) * 1s);
-    --speed: calc(var(--cross-speed) * 1s);
-    --x: -100vmax;
-  }
-  .construct--vertical {
-    --delay: calc((var(--base-delay) + var(--dot-delay)) * 1s);
-    --speed: calc(var(--dot-speed) * 1s);
-    --y: -150vmax;
-  }
-
-  @keyframes let-go {
-    0%, 48% { rotate: var(--start); }
-    50%, 100% { rotate: var(--end); }
-  }
-  @keyframes slide-in {
-    0% { transform: translate(var(--x, 0), var(--y, 0)); }
-    40%, 100% { transform: translate(0, 0); }
-  }
-  @keyframes slide-out {
-    0%, 60% { transform: translate(0, 0); }
-    100% { transform: translate(var(--x, 0), var(--y, 0)); }
-  }
-
-  .construct, .claw, .cross, .dot, .claw path {
-    transform-box: fill-box;
-  }
-
-  .claw--horizontal { transform-origin: 50% 50%; }
-  .claw path { stroke: var(--claw); }
-  .claw line { stroke: var(--cable); }
-  .claw circle { fill: var(--head); stroke: var(--head); }
-
-  .claw--vertical path:nth-of-type(1) {
-    transform-origin: 0 0; rotate: -25deg;
-    --start: 0; --end: -25deg;
-  }
-  .claw--vertical path:nth-of-type(2) {
-    transform-origin: 100% 0; rotate: 25deg;
-    --start: 0; --end: 25deg;
-  }
-  .claw--horizontal path:nth-of-type(1) {
-    transform-origin: 0 100%; rotate: 4deg;
-    --start: 4deg; --end: -25deg;
-  }
-  .claw--horizontal path:nth-of-type(2) {
-    transform-origin: 0 100%; rotate: -4deg;
-    --start: -4deg; --end: 25deg;
-  }
-}
+@layer normalize, base, demo, form, toc, transitions, alignment, theme-toggle, pricing-toggle, morphing-faq, course-cards;
 
 @layer alignment {
   [data-align='right'] {
@@ -294,40 +209,6 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 0.02em;
-      padding: 0.3rem 0.75rem;
-      border-radius: 100px;
-      background: #FF1E1E;
-      color: #fff;
-      animation: pulse-badge 2s ease-in-out infinite;
-    }
-
-    .status-badge::before {
-      content: '';
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #fff;
-      animation: blink 1.5s ease-in-out infinite;
-    }
-
-    @keyframes pulse-badge {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.85; }
-    }
-
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
     }
 
     .author {
@@ -820,7 +701,7 @@
   }
 
   .control .premium::before {
-    content: '';
+    content: 'Premium';
     position: absolute;
     left: 50%;
     top: 50%;
@@ -878,80 +759,6 @@
     scale: 0.75;
     transform-origin: -65% 150%;
     border-radius: 100px;
-  }
-}
-
-/* ===== Skill Panels (connected to pricing toggle) ===== */
-@layer skill-panels {
-  .skill-panels {
-    width: 100%;
-    max-width: 520px;
-    display: grid;
-  }
-
-  .skill-panel {
-    grid-area: 1 / 1;
-    opacity: 0;
-    transform: translateY(8px);
-    transition: opacity 0.35s ease, transform 0.35s ease;
-    pointer-events: none;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    padding: 1.5rem;
-    border-radius: 16px;
-    border: 1px solid color-mix(in hsl, canvasText, transparent 80%);
-    background: light-dark(hsl(0 0% 98%), hsl(0 0% 6%));
-    visibility: hidden;
-  }
-
-  .skill-panel.active {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-    visibility: visible;
-  }
-
-  .skill-panel__header {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  .skill-panel__header svg {
-    flex-shrink: 0;
-    color: #FF1E1E;
-  }
-
-  .skill-panel__header h3 {
-    margin: 0;
-    font-size: 1.15rem;
-  }
-
-  .skill-panel p {
-    margin: 0;
-    font-size: 0.925rem;
-    line-height: 1.6;
-    opacity: 0.8;
-  }
-
-  .skill-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    list-style: none;
-    padding: 0;
-    margin: 0.25rem 0 0;
-  }
-
-  .skill-tags li {
-    font-size: 0.75rem;
-    font-weight: 500;
-    padding: 0.3rem 0.7rem;
-    border-radius: 100px;
-    background: light-dark(hsl(0 0% 90%), hsl(0 0% 16%));
-    color: light-dark(hsl(0 0% 30%), hsl(0 0% 70%));
-    white-space: nowrap;
   }
 }
 
@@ -1400,7 +1207,7 @@
   .course-list {
     display: grid;
     container-type: inline-size;
-    grid-template-columns: 10fr 1fr 1fr;
+    grid-template-columns: 10fr 1fr 1fr 1fr 1fr 1fr 1fr;
     gap: var(--card-gap);
     list-style-type: none;
     justify-content: center;
@@ -1420,70 +1227,4 @@
     border-radius: 8px;
     border: 1px solid color-mix(in hsl, canvas, canvasText 50%);
   }
-}
-
-/* Examples / I Also Create Websites */
-.examples-section {
-  text-align: center;
-  padding: 2rem 0;
-}
-
-.examples-section > p {
-  margin-bottom: 2rem;
-  opacity: 0.7;
-}
-
-.examples-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.5rem;
-  text-align: left;
-}
-
-.example-card {
-  display: block;
-  padding: 1.5rem;
-  border-radius: 12px;
-  border: 1px solid color-mix(in hsl, canvasText, transparent 80%);
-  background: light-dark(hsl(0 0% 98%), hsl(0 0% 8%));
-  text-decoration: none;
-  color: canvasText;
-  transition: border-color 0.2s, transform 0.2s;
-}
-
-.example-card:hover {
-  border-color: color-mix(in hsl, canvasText, transparent 40%);
-  transform: translateY(-2px);
-}
-
-.example-card__icon {
-  font-size: 2rem;
-  margin-bottom: 0.75rem;
-}
-
-.example-card h3 {
-  margin: 0 0 0.5rem;
-  font-size: 1.1rem;
-}
-
-.example-card p {
-  margin: 0;
-  font-size: 0.875rem;
-  opacity: 0.7;
-  line-height: 1.5;
-}
-
-.example-card code {
-  font-size: 0.8rem;
-  background: light-dark(hsl(0 0% 90%), hsl(0 0% 20%));
-  padding: 0.1rem 0.3rem;
-  border-radius: 3px;
-}
-
-.example-card__link {
-  display: inline-block;
-  margin-top: 1rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #FF1E1E;
 }

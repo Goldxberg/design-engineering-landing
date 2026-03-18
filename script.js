@@ -2,13 +2,10 @@
 const toggle = document.getElementById('theme-toggle');
 const root = document.documentElement;
 
-// Check for saved preference or default to light
+// Check for saved preference or default to system
 const savedTheme = localStorage.getItem('theme');
 if (savedTheme) {
   root.dataset.theme = savedTheme;
-} else {
-  root.dataset.theme = 'light';
-  localStorage.setItem('theme', 'light');
 }
 
 toggle.addEventListener('click', () => {
@@ -36,25 +33,6 @@ toggle.addEventListener('click', () => {
 
   localStorage.setItem('theme', next);
 });
-
-// Skill panels — connect radio toggle to content panels
-const skillRadios = document.querySelectorAll('input[name="tier"]');
-const skillPanels = document.querySelectorAll('.skill-panel');
-const panelMap = { free: 'precision', solo: 'adaptability', team: 'execution' };
-
-function syncSkillPanel() {
-  const checked = document.querySelector('input[name="tier"]:checked');
-  if (!checked) return;
-  const target = panelMap[checked.id];
-  skillPanels.forEach(panel => {
-    panel.classList.toggle('active', panel.dataset.panel === target);
-  });
-}
-
-if (skillRadios.length && skillPanels.length) {
-  skillRadios.forEach(radio => radio.addEventListener('change', syncSkillPanel));
-  syncSkillPanel();
-}
 
 // Morphing disclosure: measure content heights for animation
 function measureContentHeights() {
