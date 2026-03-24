@@ -69,7 +69,14 @@ function generateTableOfContents() {
   const article = document.querySelector('article');
   if (!article) return;
 
-  const headings = Array.from(article.querySelectorAll('h2, h3, h4, h5, h6'));
+  const pipDemo = document.getElementById('pip-demo');
+  const pipHeadings = pipDemo ? Array.from(pipDemo.querySelectorAll('h2, h3, h4, h5, h6')) : [];
+  const articleHeadings = Array.from(article.querySelectorAll('h2, h3, h4, h5, h6'));
+
+  // Merge in document order
+  const headings = [...pipHeadings, ...articleHeadings].sort((a, b) =>
+    a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1
+  );
   if (headings.length === 0) return;
 
   const buildTOC = (items, startIndex = 0, currentLevel = 1) => {
@@ -146,6 +153,18 @@ function generateTableOfContents() {
 }
 
 generateTableOfContents();
+
+// PiP scroll-state fallback via IntersectionObserver
+if (!CSS.supports('container-type: scroll-state')) {
+  const sentinel = document.getElementById('pip-sentinel');
+  const demo = document.getElementById('pip-demo');
+  if (sentinel && demo) {
+    const observer = new IntersectionObserver((entries) => {
+      demo.dataset.stuck = !entries[0].isIntersecting;
+    });
+    observer.observe(sentinel);
+  }
+}
 
 // Course cards interaction (from CodePen XJWNMOO)
 const list = document.querySelector('.course-list');
