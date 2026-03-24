@@ -1671,3 +1671,116 @@
   font-weight: 600;
   color: #FF1E1E;
 }
+
+/* ── Mobile ─────────────────────────────────────────────── */
+@media (max-width: 768px) {
+
+  /* Collapse two-column grid to single block flow */
+  .container {
+    display: block;
+    padding-inline: 1.25rem;
+  }
+
+  /* Hide the TOC sidebar — no room on mobile */
+  table-of-contents {
+    display: none;
+  }
+
+  /* Full-width content areas */
+  header,
+  main,
+  footer,
+  .pip-demo,
+  .container > hr {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Header: shorter hero, tighter padding */
+  header.building-header {
+    min-height: 30vh;
+    padding-block: 2rem;
+  }
+
+  /* Sections: reduce bottom margin */
+  article section {
+    margin-bottom: 3rem !important;
+  }
+
+  /* Intro paragraph */
+  article p.intro {
+    font-size: 1rem;
+  }
+
+  /* Skill panels: full width */
+  .skill-panels {
+    max-width: 100%;
+  }
+
+  /* What I Bring toggle: full width */
+  .control {
+    width: 100%;
+  }
+
+  /* Course cards: horizontal scroll so the interaction still works */
+  .courses-section {
+    align-items: flex-start;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.5rem;
+  }
+
+  .course-list {
+    max-width: none;
+    width: clamp(480px, 90vw, 700px);
+    height: clamp(220px, 35dvh, 360px);
+  }
+
+  /* Examples grid: single column */
+  .examples-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* pip-demo: make video fill the width */
+  .pip-demo {
+    --content-width: min(640px, calc(100vw - 2.5rem));
+  }
+
+  /* pip-body padding on mobile */
+  .pip-body,
+  .pip-header,
+  .pip-footer-bar {
+    padding-inline: 0;
+  }
+
+  /* pip nav: already width 100%, just ensure it spans the viewport */
+  .pip-nav {
+    width: 100vw;
+    margin-left: -1.25rem;
+  }
+
+  /* Footer contact buttons: stack vertically */
+  [data-waitlist-form] [data-controls] {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  [data-waitlist-form] [data-controls] a {
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Bear link: smaller tap target area won't overlap as much */
+  .bear-link {
+    width: 36px;
+    top: 0.75rem;
+    left: 0.75rem;
+  }
+
+  /* Theme toggle: adjust position */
+  .theme-toggle {
+    top: 0.75rem;
+    right: 0.75rem;
+  }
+}
