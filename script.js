@@ -36,28 +36,29 @@ toggle.addEventListener('click', () => {
 
 // Morphing disclosure: measure content heights for animation
 function measureContentHeights() {
-  const details = document.querySelectorAll('.morphing-disclosure details');
-  const container = document.querySelector('.morphing-disclosure');
-  if (!container || details.length === 0) return;
+  document.querySelectorAll('.morphing-disclosure').forEach((container) => {
+    const details = container.querySelectorAll('details');
+    if (details.length === 0) return;
 
-  const originalVisibility = container.style.visibility;
-  container.style.visibility = 'hidden';
+    const originalVisibility = container.style.visibility;
+    container.style.visibility = 'hidden';
 
-  details.forEach((detail) => {
-    const wasOpen = detail.hasAttribute('open');
-    if (!wasOpen) detail.setAttribute('open', '');
-    detail.offsetHeight;
+    details.forEach((detail) => {
+      const wasOpen = detail.hasAttribute('open');
+      if (!wasOpen) detail.setAttribute('open', '');
+      detail.offsetHeight;
 
-    const content = detail.querySelector('.content');
-    if (content) {
-      const height = Math.ceil(content.getBoundingClientRect().height);
-      detail.style.setProperty('--content-height', `${height}px`);
-    }
+      const content = detail.querySelector('.content');
+      if (content) {
+        const height = Math.ceil(content.getBoundingClientRect().height);
+        detail.style.setProperty('--content-height', `${height}px`);
+      }
 
-    if (!wasOpen) detail.removeAttribute('open');
+      if (!wasOpen) detail.removeAttribute('open');
+    });
+
+    container.style.visibility = originalVisibility;
   });
-
-  container.style.visibility = originalVisibility;
 }
 measureContentHeights();
 
@@ -153,6 +154,21 @@ function generateTableOfContents() {
 }
 
 generateTableOfContents();
+
+// Skill panel toggle
+const panelMap = { free: 'precision', solo: 'adaptability', team: 'execution' };
+const radios = document.querySelectorAll('input[name="tier"]');
+const panels = document.querySelectorAll('.skill-panel');
+
+function activatePanel() {
+  const checked = document.querySelector('input[name="tier"]:checked');
+  if (!checked) return;
+  const target = panelMap[checked.id];
+  panels.forEach((p) => p.classList.toggle('active', p.dataset.panel === target));
+}
+
+radios.forEach((r) => r.addEventListener('change', activatePanel));
+activatePanel();
 
 // PiP scroll-state fallback via IntersectionObserver
 if (!CSS.supports('container-type: scroll-state')) {
