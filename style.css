@@ -431,26 +431,6 @@
     z-index: -1;
   }
 
-  .bear-link {
-    color: canvasText;
-    position: fixed;
-    top: 1rem;
-    left: 1rem;
-    width: 48px;
-    aspect-ratio: 1;
-    display: grid;
-    place-items: center;
-    opacity: 0.8;
-    z-index: 10;
-  }
-
-  :where(.x-link, .bear-link):is(:hover, :focus-visible) {
-    opacity: 1;
-  }
-
-  .bear-link svg {
-    width: 75%;
-  }
 
   .sr-only {
     position: absolute;
@@ -1769,13 +1749,6 @@
     text-align: center;
     width: 100%;
     box-sizing: border-box;
-  }
-
-  /* Bear link: smaller tap target area won't overlap as much */
-  .bear-link {
-    width: 36px;
-    top: 0.75rem;
-    left: 0.75rem;
   }
 
   /* Theme toggle: adjust position */
