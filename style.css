@@ -1,6 +1,6 @@
 @import url('https://unpkg.com/normalize.css') layer(normalize);
 
-@layer normalize, base, demo, building-text, form, toc, transitions, alignment, theme-toggle, pricing-toggle, skill-panels, morphing-faq, course-cards;
+@layer normalize, base, demo, building-text, form, toc, transitions, alignment, theme-toggle, stack-cards, morphing-faq, course-cards;
 
 @layer building-text {
   :root {
@@ -901,6 +901,47 @@
     background: light-dark(hsl(0 0% 90%), hsl(0 0% 16%));
     color: light-dark(hsl(0 0% 30%), hsl(0 0% 70%));
     white-space: nowrap;
+  }
+}
+
+@layer stack-cards {
+  .stack-section {
+    margin-bottom: 4rem;
+  }
+
+  .stack-section h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+  }
+
+  .stack-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .stack-card {
+    padding: 1.5rem;
+    border-radius: 16px;
+    border: 1px solid color-mix(in hsl, canvasText, transparent 80%);
+    background: light-dark(hsl(0 0% 98%), hsl(0 0% 6%));
+    transition: border-color 0.2s;
+  }
+
+  .stack-card:hover {
+    border-color: light-dark(var(--accent-light), var(--accent-dark));
+  }
+
+  .stack-card h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1.1rem;
+  }
+
+  .stack-card p {
+    margin: 0 0 1rem;
+    font-size: 0.925rem;
+    line-height: 1.6;
+    opacity: 0.8;
   }
 }
 

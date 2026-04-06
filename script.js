@@ -155,20 +155,6 @@ function generateTableOfContents() {
 
 generateTableOfContents();
 
-// Skill panel toggle
-const panelMap = { free: 'precision', solo: 'adaptability', team: 'execution' };
-const radios = document.querySelectorAll('input[name="tier"]');
-const panels = document.querySelectorAll('.skill-panel');
-
-function activatePanel() {
-  const checked = document.querySelector('input[name="tier"]:checked');
-  if (!checked) return;
-  const target = panelMap[checked.id];
-  panels.forEach((p) => p.classList.toggle('active', p.dataset.panel === target));
-}
-
-radios.forEach((r) => r.addEventListener('change', activatePanel));
-activatePanel();
 
 // PiP scroll-state fallback via IntersectionObserver
 if (!CSS.supports('container-type: scroll-state')) {
