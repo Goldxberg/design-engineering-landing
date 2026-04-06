@@ -958,6 +958,23 @@
     opacity: 0.75;
   }
 
+  .project-card__img {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    object-position: top;
+    border-radius: 10px;
+    border: 1px solid color-mix(in hsl, canvasText, transparent 88%);
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease, filter 0.3s ease;
+    filter: grayscale(0.2);
+  }
+
+  .project-card:hover .project-card__img {
+    transform: scale(1.02);
+    filter: grayscale(0);
+  }
+
   .project-card__url {
     font-size: 0.8rem;
     font-family: 'Geist Mono', monospace;
