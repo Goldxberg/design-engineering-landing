@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en" data-align="right" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Materials Hub — Your First Stop for Materials Science</title>
+  <meta name="description" content="The community hub for materials science. Databases, tools, events, research — all in one place. Free.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    @layer stack-cards, course-cards, onboarding {
+      /* ── HERO BADGE ─────────────────────────── */
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.375rem 0.875rem;
+        border-radius: 100px;
+        background: color-mix(in srgb, light-dark(var(--accent-light), var(--accent-dark)), transparent 88%);
+        color: light-dark(var(--accent-light), var(--accent-dark));
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
+
+      .hero-badge .pulse {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: light-dark(var(--accent-light), var(--accent-dark));
+        animation: pulse 2s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
+      }
+
+      .hero-features {
+        list-style: none;
+        padding: 0;
+        margin: 1.5rem 0 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .hero-features li {
+        font-size: 0.9375rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .hero-features .em { font-size: 1.125rem; width: 22px; text-align: center; }
+
+      .hero-proof {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.75rem;
+        color: light-dark(hsl(0 0% 50%), hsl(0 0% 50%));
+        margin-top: 1rem;
+      }
+
+      .hero-proof .dots {
+        display: flex;
+      }
+
+      .hero-proof .dots span {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        border: 2px solid light-dark(#fff, #000);
+        display: grid;
+        place-items: center;
+        font-size: 0.5rem;
+        font-weight: 700;
+        margin-left: -4px;
+      }
+
+      .hero-proof .dots span:first-child { margin-left: 0; }
+      .hero-proof .dots span:nth-child(1) { background: color-mix(in srgb, light-dark(var(--accent-light), var(--accent-dark)), transparent 75%); color: light-dark(var(--accent-light), var(--accent-dark)); }
+      .hero-proof .dots span:nth-child(2) { background: #dbeafe; color: #3b82f6; }
+      .hero-proof .dots span:nth-child(3) { background: #d1fae5; color: #10b981; }
+      .hero-proof .dots span:nth-child(4) { background: #fce7f3; color: #ec4899; }
+
+      /* ── CATEGORY GRID (the clickable explore cards) ── */
+      .cat-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+      }
+
+      .cat-card {
+        border: 1px solid color-mix(in hsl, canvasText, transparent 85%);
+        border-radius: 0.5rem;
+        padding: 1.125rem;
+        text-decoration: none;
+        color: inherit;
+        display: block;
+        position: relative;
+        transition: border-color 0.26s cubic-bezier(0.215, 0.610, 0.355, 1),
+                    box-shadow 0.26s cubic-bezier(0.215, 0.610, 0.355, 1);
+        background: light-dark(hsl(0 0% 100% / 0.5), hsl(0 0% 5% / 0.5));
+      }
+
+      .cat-card:hover {
+        border-color: light-dark(var(--accent-light), var(--accent-dark));
+        box-shadow: 0 2px 12px color-mix(in srgb, light-dark(var(--accent-light), var(--accent-dark)), transparent 85%);
+      }
+
+      .cat-card .emoji { font-size: 1.75rem; display: block; margin-bottom: 0.5rem; }
+
+      .cat-card h3 {
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin: 0 0 0.125rem;
+      }
+
+      .cat-card p {
+        font-size: 0.75rem;
+        color: light-dark(hsl(0 0% 50%), hsl(0 0% 50%));
+        line-height: 1.4;
+        margin: 0;
+      }
+
+      .cat-badge {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+        font-size: 0.5625rem;
+        font-family: 'Geist Mono', monospace;
+        font-weight: 700;
+        padding: 0.15rem 0.5rem;
+        border-radius: 4px;
+        text-transform: uppercase;
+      }
+
+      .badge-new { background: #dcfce7; color: #16a34a; }
+      .badge-hot { background: #fef2f2; color: #ef4444; }
+      .badge-pop { background: #fff7ed; color: #f97316; }
+      .badge-beta { background: #f3f0ff; color: #7c3aed; }
+      .badge-updated { background: #e0f7ff; color: #0ea5e9; }
+
+      [data-theme='dark'] .badge-new { background: #052e16; }
+      [data-theme='dark'] .badge-hot { background: #2d0f0f; }
+      [data-theme='dark'] .badge-pop { background: #2d1a0a; }
+      [data-theme='dark'] .badge-beta { background: #1d1538; }
+      [data-theme='dark'] .badge-updated { background: #0c2d48; }
+
+      /* ── LIVE DATA SIDEBAR ──────────────────── */
+      .live-sidebar {
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid color-mix(in hsl, canvasText, transparent 85%);
+      }
+
+      .live-block {
+        margin-bottom: 2rem;
+      }
+
+      .live-block h3 {
+        font-size: 0.8125rem;
+        font-weight: 600;
+        margin: 0 0 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+      }
+
+      .live-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .live-list li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.4375rem 0;
+        border-bottom: 1px solid color-mix(in hsl, canvasText, transparent 92%);
+        font-size: 0.75rem;
+      }
+
+      .live-list li:last-child { border-bottom: none; }
+
+      .live-list .val {
+        font-family: 'Geist Mono', monospace;
+        font-weight: 600;
+        color: light-dark(var(--accent-light), var(--accent-dark));
+      }
+
+      .live-list .date {
+        font-size: 0.625rem;
+        color: light-dark(hsl(0 0% 60%), hsl(0 0% 40%));
+      }
+
+      /* Event items */
+      .event-item {
+        display: flex;
+        gap: 0.625rem;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid color-mix(in hsl, canvasText, transparent 92%);
+      }
+      .event-item:last-child { border-bottom: none; }
+
+      .event-date {
+        width: 36px;
+        height: 36px;
+        background: color-mix(in srgb, light-dark(var(--accent-light), var(--accent-dark)), transparent 88%);
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .event-date .day {
+        font-family: 'Geist Mono', monospace;
+        font-size: 0.8125rem;
+        font-weight: 700;
+        color: light-dark(var(--accent-light), var(--accent-dark));
+        line-height: 1;
+      }
+
+      .event-date .mon {
+        font-size: 0.5rem;
+        font-weight: 600;
+        color: light-dark(var(--accent-light), var(--accent-dark));
+        text-transform: uppercase;
+      }
+
+      .event-info h4 {
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin: 0;
+        line-height: 1.3;
+      }
+
+      .event-info p {
+        font-size: 0.625rem;
+        color: light-dark(hsl(0 0% 50%), hsl(0 0% 50%));
+        margin: 0;
+      }
+
+      .hot-tag {
+        font-size: 0.5rem;
+        font-weight: 700;
+        background: #fef2f2;
+        color: #ef4444;
+        padding: 0.1rem 0.3rem;
+        border-radius: 3px;
+        margin-left: 0.25rem;
+        vertical-align: middle;
+      }
+
+      [data-theme='dark'] .hot-tag { background: #2d0f0f; }
+
+      /* ── BLOG-STYLE CARDS ───────────────────── */
+      .article-list {
+        margin-top: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .article-card {
+        border: 1px solid color-mix(in hsl, canvasText, transparent 85%);
+        border-radius: 0.5rem;
+        padding: 1rem;
+        display: flex;
+        gap: 1rem;
+        text-decoration: none;
+        color: inherit;
+        transition: border-color 0.26s;
+        background: light-dark(hsl(0 0% 100% / 0.5), hsl(0 0% 5% / 0.5));
+      }
+
+      .article-card:hover {
+        border-color: light-dark(var(--accent-light), var(--accent-dark));
+      }
+
+      .article-thumb {
+        width: 72px;
+        height: 56px;
+        border-radius: 6px;
+        background: color-mix(in srgb, light-dark(var(--accent-light), var(--accent-dark)), transparent 88%);
+        display: grid;
+        place-items: center;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+      }
+
+      .article-body h3 {
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin: 0 0 0.25rem;
+        line-height: 1.3;
+      }
+
+      .article-meta {
+        font-size: 0.6875rem;
+        color: light-dark(hsl(0 0% 50%), hsl(0 0% 50%));
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+      }
+
+      .article-meta .author-pip {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: color-mix(in srgb, light-dark(var(--accent-light), var(--accent-dark)), transparent 80%);
+        display: inline-grid;
+        place-items: center;
+        font-size: 0.375rem;
+        font-weight: 700;
+        color: light-dark(var(--accent-light), var(--accent-dark));
+      }
+
+      /* ── TOOL PILLS ─────────────────────────── */
+      .tool-pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.375rem;
+        margin-top: 1rem;
+      }
+
+      .tool-pill {
+        font-size: 0.6875rem;
+        font-family: 'Geist Mono', monospace;
+        padding: 0.375rem 0.75rem;
+        border-radius: 100px;
+        border: 1px solid color-mix(in hsl, canvasText, transparent 85%);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        color: light-dark(hsl(0 0% 40%), hsl(0 0% 60%));
+        transition: border-color 0.2s, color 0.2s;
+        background: light-dark(hsl(0 0% 100% / 0.5), hsl(0 0% 5% / 0.5));
+      }
+
+      .tool-pill:hover {
+        border-color: light-dark(var(--accent-light), var(--accent-dark));
+        color: light-dark(var(--accent-light), var(--accent-dark));
+      }
+
+      .tool-verified {
+        font-size: 0.5rem;
+        font-weight: 700;
+        background: #dcfce7;
+        color: #16a34a;
+        padding: 0.1rem 0.3rem;
+        border-radius: 3px;
+      }
+
+      [data-theme='dark'] .tool-verified { background: #052e16; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <table-of-contents></table-of-contents>
+    <header id="pre" class="building-header">
+      <div class="author">
+        <div class="author-info">
+          <p class="author-line">Materials Hub.</p>
+        </div>
+      </div>
+      <h1 class="fluid" style="--font-level: 4; line-height: 1.05; margin: 0; text-wrap: balance;">Like a travel guide.<br>But for materials science.</h1>
+    </header>
+    <main>
+      <article>
+        <div class="hero-badge"><span class="pulse"></span> 12,000+ researchers already inside</div>
+
+        <p class="intro">Your first stop for materials science. Databases, tools, events, and the latest research — curated, organized, and free. No paywall. No catch.</p>
+
+        <ul class="hero-features">
+          <li><span class="em">&#x1F513;</span> Full access to every materials database</li>
+          <li><span class="em">&#x1F9EA;</span> Lab finder — match with research groups</li>
+          <li><span class="em">&#x1F4C5;</span> Conference & event calendar</li>
+          <li><span class="em">&#x1F381;</span> Software discounts for students</li>
+          <li><span class="em">&#x1F60A;</span> Free. Always. No catch.</li>
+        </ul>
+
+        <div class="hero-proof">
+          <div class="dots">
+            <span>ML</span>
+            <span>KR</span>
+            <span>JW</span>
+            <span>+</span>
+          </div>
+          12,000+ researchers, engineers & students from 80+ countries
+        </div>
+
+        <hr style="margin-top: 3rem;">
+
+        <!-- ── CATEGORIES ─────────────────────── -->
+        <section id="explore">
+          <h2>Explore Materials Science</h2>
+          <div class="cat-grid">
+            <a href="#" class="cat-card">
+              <span class="cat-badge badge-pop">Popular</span>
+              <span class="emoji">&#x1F4B0;</span>
+              <h3>Grants & Funding</h3>
+              <p>NSF, ERC, DOE, industry grants. Updated weekly.</p>
+            </a>
+            <a href="#" class="cat-card">
+              <span class="cat-badge badge-updated">Updated</span>
+              <span class="emoji">&#x1F3E2;</span>
+              <h3>Research Labs Directory</h3>
+              <p>500+ labs worldwide. Filter by material, technique, openings.</p>
+            </a>
+            <a href="#" class="cat-card">
+              <span class="cat-badge badge-new">New</span>
+              <span class="emoji">&#x1F9E0;</span>
+              <h3>AI for Materials</h3>
+              <p>ML models, datasets, tools for computational discovery.</p>
+            </a>
+            <a href="#" class="cat-card">
+              <span class="emoji">&#x1F4D6;</span>
+              <h3>Materials Dictionary</h3>
+              <p>Every term explained. From austenite to zone refining.</p>
+            </a>
+            <a href="#" class="cat-card">
+              <span class="cat-badge badge-beta">Beta</span>
+              <span class="emoji">&#x1F91D;</span>
+              <h3>Find a Collaborator</h3>
+              <p>Tinder for research partners. Match by expertise & interest.</p>
+            </a>
+            <a href="#" class="cat-card">
+              <span class="emoji">&#x1F468;&#x200D;&#x1F52C;</span>
+              <h3>Service Providers</h3>
+              <p>Characterization labs, testing services, contract R&D.</p>
+            </a>
+            <a href="#" class="cat-card">
+              <span class="cat-badge badge-pop">Popular</span>
+              <span class="emoji">&#x1F6E0;&#xFE0F;</span>
+              <h3>Software & Tools</h3>
+              <p>VASP, LAMMPS, COMSOL, Materials Project, Thermo-Calc.</p>
+            </a>
+            <a href="#" class="cat-card">
+              <span class="cat-badge badge-hot">&#x1F525; 3 this week</span>
+              <span class="emoji">&#x1F4C5;</span>
+              <h3>Conferences & Events</h3>
+              <p>MRS, TMS, IUMRS, local meetups. Never miss a deadline.</p>
+            </a>
+          </div>
+        </section>
+
+        <!-- ── RECENT ARTICLES ────────────────── -->
+        <section id="articles">
+          <h2>&#x1F4DD; Latest from the Community</h2>
+          <div class="article-list">
+            <a href="#" class="article-card">
+              <div class="article-thumb">&#x1F9EC;</div>
+              <div class="article-body">
+                <h3>GNoME found 2.2M new crystals. Now what?</h3>
+                <div class="article-meta">
+                  <span class="author-pip">SK</span>
+                  Dr. Sarah Kim &middot; Computational &middot; Mar 2026
+                </div>
+              </div>
+            </a>
+            <a href="#" class="article-card">
+              <div class="article-thumb">&#x1FA78;</div>
+              <div class="article-body">
+                <h3>Self-healing polymers: from lab curiosity to production reality</h3>
+                <div class="article-meta">
+                  <span class="author-pip">RP</span>
+                  Prof. R. Patel &middot; Polymers &middot; Feb 2026
+                </div>
+              </div>
+            </a>
+            <a href="#" class="article-card">
+              <div class="article-thumb">&#x26A1;</div>
+              <div class="article-body">
+                <h3>Why GaN is eating silicon's lunch in power electronics</h3>
+                <div class="article-meta">
+                  <span class="author-pip">TL</span>
+                  T. Liu &middot; Semiconductors &middot; Feb 2026
+                </div>
+              </div>
+            </a>
+            <a href="#" class="article-card">
+              <div class="article-thumb">&#x1F52C;</div>
+              <div class="article-body">
+                <h3>A practical guide to in-situ TEM for beginners</h3>
+                <div class="article-meta">
+                  <span class="author-pip">MW</span>
+                  Dr. M. Weber &middot; Characterization &middot; Jan 2026
+                </div>
+              </div>
+            </a>
+          </div>
+        </section>
+
+        <hr />
+
+        <!-- ── TOOLS ──────────────────────────── -->
+        <section id="tools">
+          <h2>&#x1F6E0;&#xFE0F; Software & Databases</h2>
+          <p>The tools researchers actually use. Verified by the community.</p>
+          <div class="tool-pills">
+            <span class="tool-pill">&#x1F9EE; VASP <span class="tool-verified">&#x2713;</span></span>
+            <span class="tool-pill">&#x2699;&#xFE0F; LAMMPS <span class="tool-verified">&#x2713;</span></span>
+            <span class="tool-pill">&#x1F4CA; COMSOL <span class="tool-verified">&#x2713;</span></span>
+            <span class="tool-pill">&#x1F310; Materials Project <span class="tool-verified">&#x2713;</span></span>
+            <span class="tool-pill">&#x1F321;&#xFE0F; Thermo-Calc</span>
+            <span class="tool-pill">&#x1F9EC; Pymatgen</span>
+            <span class="tool-pill">&#x1F4C8; Origin Pro</span>
+            <span class="tool-pill">&#x1F52C; ImageJ</span>
+            <span class="tool-pill">&#x1F4BB; Quantum ESPRESSO</span>
+            <span class="tool-pill">&#x1F9F2; OVITO</span>
+            <span class="tool-pill">&#x1F4D0; CrystalMaker</span>
+            <span class="tool-pill">&#x2696;&#xFE0F; CES EduPack</span>
+            <span class="tool-pill">&#x1F9EA; Gaussian</span>
+            <span class="tool-pill">&#x1F4CA; MATLAB</span>
+          </div>
+        </section>
+
+        <hr />
+
+        <!-- ── FAQ ────────────────────────────── -->
+        <section id="faq" class="faq-section" data-bordered="true" data-translate="true" data-highlight="true" data-style="border">
+          <h2>Questions</h2>
+          <div class="morphing-disclosure">
+            <details name="faq">
+              <summary>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M11.25 5.337c0-.355-.186-.676-.401-.959a1.647 1.647 0 0 1-.349-1.003c0-1.036 1.007-1.875 2.25-1.875S15 2.34 15 3.375c0 .369-.128.713-.349 1.003-.215.283-.401.604-.401.959 0 .332.278.598.61.578 1.91-.114 3.79-.342 5.632-.676a.75.75 0 0 1 .878.645 49.17 49.17 0 0 1 .376 5.452.657.657 0 0 1-.66.664c-.354 0-.675-.186-.958-.401a1.647 1.647 0 0 0-1.003-.349c-1.035 0-1.875 1.007-1.875 2.25s.84 2.25 1.875 2.25c.369 0 .713-.128 1.003-.349.283-.215.604-.401.959-.401.31 0 .557.262.534.571a48.774 48.774 0 0 1-.595 4.845.75.75 0 0 1-.61.61c-1.82.317-3.673.533-5.555.642a.58.58 0 0 1-.611-.581c0-.355.186-.676.401-.959.221-.29.349-.634.349-1.003 0-1.035-1.007-1.875-2.25-1.875s-2.25.84-2.25 1.875c0 .369.128.713.349 1.003.215.283.401.604.401.959a.641.641 0 0 1-.658.643 49.118 49.118 0 0 1-4.708-.36.75.75 0 0 1-.645-.878c.293-1.614.504-3.257.629-4.924A.53.53 0 0 0 5.337 15c-.355 0-.676.186-.959.401-.29.221-.634.349-1.003.349-1.036 0-1.875-1.007-1.875-2.25s.84-2.25 1.875-2.25c.369 0 .713.128 1.003.349.283.215.604.401.959.401a.656.656 0 0 0 .659-.663 47.703 47.703 0 0 0-.31-4.82.75.75 0 0 1 .83-.832c1.343.155 2.703.254 4.077.294a.64.64 0 0 0 .657-.642Z" /></svg>
+                <span>What is materials science?</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M12 3.75a.75.75 0 0 1 .75.75v6.75h6.75a.75.75 0 0 1 0 1.5h-6.75v6.75a.75.75 0 0 1-1.5 0v-6.75H4.5a.75.75 0 0 1 0-1.5h6.75V4.5a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd" /></svg>
+              </summary>
+              <div class="content">
+                <p>The study of how a material's structure — from atomic bonds to grain boundaries — determines its properties and performance. It bridges physics, chemistry, and engineering.</p>
+              </div>
+            </details>
+            <details name="faq">
+              <summary>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM11.25 13.5v-6a.75.75 0 0 1 1.5 0v6a.75.75 0 0 1-1.5 0Zm.75 3a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Z" clip-rule="evenodd" /></svg>
+                <span>Is this really free?</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M12 3.75a.75.75 0 0 1 .75.75v6.75h6.75a.75.75 0 0 1 0 1.5h-6.75v6.75a.75.75 0 0 1-1.5 0v-6.75H4.5a.75.75 0 0 1 0-1.5h6.75V4.5a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd" /></svg>
+              </summary>
+              <div class="content">
+                <p>Yes. Community-driven, no paywall, no data selling. We keep the lights on through sponsored listings from equipment vendors and software companies — clearly labeled, never affecting content.</p>
+              </div>
+            </details>
+            <details name="faq">
+              <summary>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.644 1.59a.75.75 0 0 1 .712 0l9.75 5.25a.75.75 0 0 1 0 1.32l-9.75 5.25a.75.75 0 0 1-.712 0l-9.75-5.25a.75.75 0 0 1 0-1.32l9.75-5.25Z" /><path d="m3.265 10.602 7.668 4.129a2.25 2.25 0 0 0 2.134 0l7.668-4.13 1.37.739a.75.75 0 0 1 0 1.32l-9.75 5.25a.75.75 0 0 1-.71 0l-9.75-5.25a.75.75 0 0 1 0-1.32l1.37-.738Z" /><path d="m10.933 19.231-7.668-4.13-1.37.739a.75.75 0 0 0 0 1.32l9.75 5.25c.221.12.489.12.71 0l9.75-5.25a.75.75 0 0 0 0-1.32l-1.37-.738-7.668 4.13a2.25 2.25 0 0 1-2.134-.001Z" /></svg>
+                <span>How is AI changing materials discovery?</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M12 3.75a.75.75 0 0 1 .75.75v6.75h6.75a.75.75 0 0 1 0 1.5h-6.75v6.75a.75.75 0 0 1-1.5 0v-6.75H4.5a.75.75 0 0 1 0-1.5h6.75V4.5a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd" /></svg>
+              </summary>
+              <div class="content">
+                <p>ML models trained on materials databases predict properties of compounds never synthesized. Google DeepMind's GNoME found 2.2 million new stable crystals. The bottleneck shifted from "what to try" to "how fast can we make it."</p>
+              </div>
+            </details>
+            <details name="faq">
+              <summary>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M9.315 7.584C12.195 3.883 16.695 1.5 21.75 1.5a.75.75 0 0 1 .75.75c0 5.056-2.383 9.555-6.084 12.436A6.75 6.75 0 0 1 9.75 22.5a.75.75 0 0 1-.75-.75v-4.131A15.838 15.838 0 0 1 6.382 15H2.25a.75.75 0 0 1-.75-.75 6.75 6.75 0 0 1 7.815-6.666ZM15 6.75a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5Z" clip-rule="evenodd" /><path d="M5.26 17.242a.75.75 0 1 0-.897-1.203 5.243 5.243 0 0 0-2.05 5.022.75.75 0 0 0 .625.627 5.243 5.243 0 0 0 5.022-2.051.75.75 0 1 0-1.202-.897 3.744 3.744 0 0 1-3.008 1.51c0-1.23.592-2.323 1.51-3.008Z" /></svg>
+                <span>What is the strongest material?</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M12 3.75a.75.75 0 0 1 .75.75v6.75h6.75a.75.75 0 0 1 0 1.5h-6.75v6.75a.75.75 0 0 1-1.5 0v-6.75H4.5a.75.75 0 0 1 0-1.5h6.75V4.5a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd" /></svg>
+              </summary>
+              <div class="content">
+                <p>Depends on "strong." Graphene: highest tensile strength (~130 GPa). Diamond: hardest. Spider silk: best toughness-to-weight. Tungsten: highest melting point. No single winner — every material is a set of trade-offs.</p>
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <hr />
+        <section>
+          <p>Structure determines properties. Properties determine performance. Performance determines whether the thing you built survives contact with reality. That is materials science.</p>
+        </section>
+      </article>
+    </main>
+    <hr/>
+    <footer>
+      <p>&copy; Materials Hub 2026 &middot; Community-driven, always free</p>
+    </footer>
+  </div>
+  <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+    <svg class="theme-toggle__sun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+    </svg>
+    <svg class="theme-toggle__moon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+    </svg>
+  </button>
+  <script src="script.js"></script>
+</body>
+</html>

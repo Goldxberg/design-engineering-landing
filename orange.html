@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ariel Goldberg — AI Builder Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@100..900&display=swap" rel="stylesheet">
+  <style>
+    @import url('https://unpkg.com/normalize.css') layer(normalize);
+
+    @layer normalize, base, layout, cards, sidebar, tools, cta, footer, theme-toggle;
+
+    @layer base {
+      :root {
+        --font-size-min: 16;
+        --font-size-max: 20;
+        --font-ratio-min: 1.2;
+        --font-ratio-max: 1.33;
+        --font-width-min: 375;
+        --font-width-max: 1500;
+        --accent-light: hsl(0, 100%, 56%);
+        --accent-dark: hsl(164, 100%, 56%);
+      }
+
+      html { color-scheme: light dark; scroll-behavior: smooth; }
+      [data-theme='light'] { color-scheme: light only; }
+      [data-theme='dark'] { color-scheme: dark only; }
+
+      :where(.fluid) {
+        --fluid-min: calc(var(--font-size-min) * pow(var(--font-ratio-min), var(--font-level, 0)));
+        --fluid-max: calc(var(--font-size-max) * pow(var(--font-ratio-max), var(--font-level, 0)));
+        --fluid-preferred: calc((var(--fluid-max) - var(--fluid-min)) / (var(--font-width-max) - var(--font-width-min)));
+        --fluid-type: clamp(
+          (var(--fluid-min) / 16) * 1rem,
+          ((var(--fluid-min) / 16) * 1rem) - (((var(--fluid-preferred) * var(--font-width-min)) / 16) * 1rem) + (var(--fluid-preferred) * var(--variable-unit, 100vi)),
+          (var(--fluid-max) / 16) * 1rem
+        );
+        font-size: var(--fluid-type);
+      }
+
+      *, *::before, *::after { box-sizing: border-box; }
+
+      body {
+        background: light-dark(#fff, #000);
+        display: grid;
+        place-items: center;
+        min-height: 100vh;
+        font-family: 'Inter', sans-serif;
+        color: light-dark(hsl(0 0% 24%), hsl(0 0% 98%));
+        letter-spacing: -0.02em;
+      }
+
+      body::before {
+        --size: 45px;
+        --line: color-mix(in hsl, canvasText, transparent 90%);
+        content: '';
+        height: 100vh;
+        width: 100vw;
+        position: fixed;
+        background:
+          linear-gradient(90deg, var(--line) 1px, transparent 1px var(--size))
+            calc(var(--size) * 0.36) 50% / var(--size) var(--size),
+          linear-gradient(var(--line) 1px, transparent 1px var(--size))
+            0% calc(var(--size) * 0.32) / var(--size) var(--size);
+        mask: linear-gradient(-200deg, transparent 50%, white);
+        top: 0;
+        pointer-events: none;
+        z-index: -1;
+      }
+
+      a { color: inherit; }
+      hr {
+        border: none;
+        border-top: 1px solid color-mix(in hsl, canvasText, transparent 85%);
+        margin: 0;
+      }
+    }
+
+    @layer layout {
+      .container {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        max-width: 100%;
+        padding-inline: 1rem;
+      }
+
+      .main-col {
+        width: 60ch;
+        max-width: 100%;
+        grid-column: 1;
+      }
+
+      .side-col {
+        grid-column: 2;
+        grid-row: 1 / 99;
+        position: sticky;
+        top: 4rem;
+        align-self: start;
+        margin-left: 4rem;
+        font-size: 0.875rem;
+        width: 200px;
+      }
+
+      .side-col h2 {
+        font-size: 0.65rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        margin: 0 0 0.75rem;
+        color: light-dark(#000, #fff);
+      }
+
+      .side-col nav ol {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .side-col nav a {
+        display: block;
+        padding-block: 0.25rem;
+        text-decoration: none;
+        color: light-dark(hsl(0 0% 60%), hsl(0 0% 40%));
+        transition: color 0.26s cubic-bezier(0.215, 0.610, 0.355, 1);
+      }
+
+      .side-col nav a:hover {
+        color: light-dark(hsl(0 0% 0%), hsl(0 0% 100%));
+      }
+
+      header {
+        min-height: 40vh;
+        display: grid;
+        align-content: end;
+        padding-block: 4rem;
+      }
+
+      .author-line {
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin: 0 0 0.5rem;
+      }
+
+      .tagline {
+        --font-level: 4;
+        font-size: var(--fluid-type, 3rem);
+        line-height: 1.05;
+        margin: 0;
+        font-weight: 700;
+        letter-spacing: -0.04em;
+        text-wrap: balance;
+      }
+
+      section {
+        margin-bottom: 4rem;
+      }
+
+      h2 {
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+      }
+
+      article p {
+        line-height: 1.5;
+        margin: 0 0 1rem;
+      }
+
+      .intro {
+        font-size: 1.0625rem;
+        line-height: 1.6;
+        margin-bottom: 3rem;
+      }
+
+      @media (max-width: 900px) {
+        .container { grid-template-columns: 1fr; }
+        .side-col { display: none; }
+        .main-col { width: 100%; }
+      }
+    }
+
+    @layer cards {
+      .skill-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+      }
+
+      .skill-card {
+        border: 1px solid color-mix(in hsl, canvasText, transparent 85%);
+        border-radius: 0.5rem;
+        padding: 1.25rem;
+        transition: border-color 0.26s, box-shadow 0.26s;
+        background: light-dark(hsl(0 0% 100% / 0.6), hsl(0 0% 5% / 0.6));
+      }
+
+      .skill-card:hover {
+        border-color: light-dark(var(--accent-light), var(--accent-dark));
+        box-shadow: 0 2px 12px color-mix(in srgb, light-dark(var(--accent-light), var(--accent-dark)), transparent 85%);
+      }
+
+      .skill-card__emoji {
+        font-size: 1.5rem;
+        margin-bottom: 0.625rem;
+        display: block;
+      }
+
+      .skill-card h3 {
+        font-size: 0.9375rem;
+        font-weight: 600;
+        margin: 0 0 0.25rem;
+      }
+
+      .skill-card p {
+        font-size: 0.8125rem;
+        color: light-dark(hsl(0 0% 45%), hsl(0 0% 55%));
+        line-height: 1.5;
+        margin: 0;
+      }
+
+      .skill-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.375rem;
+        margin-top: 0.75rem;
+        padding: 0;
+        list-style: none;
+      }
+
+      .skill-tags li {
+        font-size: 0.6875rem;
+        font-family: 'Geist Mono', monospace;
+        padding: 0.2rem 0.5rem;
+        border-radius: 100px;
+        background: color-mix(in srgb, light-dark(var(--accent-light), var(--accent-dark)), transparent 88%);
+        color: light-dark(var(--accent-light), var(--accent-dark));
+      }
+
+      /* Project cards — same style as original course-list */
+      .project-list {
+        list-style: none;
+        padding: 0;
+        margin: 1.5rem 0 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .project-item {
+        border: 1px solid color-mix(in hsl, canvasText, transparent 85%);
+        border-radius: 0.5rem;
+        padding: 1.25rem;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transition: border-color 0.26s, box-shadow 0.26s;
+        background: light-dark(hsl(0 0% 100% / 0.6), hsl(0 0% 5% / 0.6));
+      }
+
+      .project-item:hover {
+        border-color: light-dark(var(--accent-light), var(--accent-dark));
+        box-shadow: 0 2px 12px color-mix(in srgb, light-dark(var(--accent-light), var(--accent-dark)), transparent 85%);
+      }
+
+      .project-icon {
+        font-size: 2rem;
+        width: 56px;
+        height: 56px;
+        border-radius: 12px;
+        background: color-mix(in srgb, light-dark(var(--accent-light), var(--accent-dark)), transparent 90%);
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+      }
+
+      .project-info h3 {
+        font-size: 0.9375rem;
+        font-weight: 600;
+        margin: 0 0 0.125rem;
+      }
+
+      .project-info p {
+        font-size: 0.8125rem;
+        color: light-dark(hsl(0 0% 45%), hsl(0 0% 55%));
+        margin: 0;
+        line-height: 1.4;
+      }
+
+      .project-link {
+        margin-left: auto;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: light-dark(var(--accent-light), var(--accent-dark));
+        white-space: nowrap;
+      }
+    }
+
+    @layer sidebar {
+      .stats-block {
+        margin-bottom: 2rem;
+      }
+
+      .stats-block dt {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: light-dark(var(--accent-light), var(--accent-dark));
+        line-height: 1.2;
+      }
+
+      .stats-block dd {
+        font-size: 0.75rem;
+        color: light-dark(hsl(0 0% 50%), hsl(0 0% 50%));
+        margin: 0 0 1rem;
+      }
+
+      .avail-list {
+        margin-top: 1.5rem;
+        padding: 0;
+        list-style: none;
+      }
+
+      .avail-list li {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.375rem 0;
+        font-size: 0.8125rem;
+        color: light-dark(hsl(0 0% 40%), hsl(0 0% 60%));
+      }
+
+      .avail-list .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: light-dark(var(--accent-light), var(--accent-dark));
+        flex-shrink: 0;
+      }
+    }
+
+    @layer tools {
+      .tool-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.375rem;
+        margin-top: 1rem;
+      }
+
+      .tool-chip {
+        font-size: 0.75rem;
+        font-family: 'Geist Mono', monospace;
+        padding: 0.375rem 0.75rem;
+        border-radius: 100px;
+        border: 1px solid color-mix(in hsl, canvasText, transparent 85%);
+        color: light-dark(hsl(0 0% 40%), hsl(0 0% 60%));
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        transition: border-color 0.2s, color 0.2s;
+        background: light-dark(hsl(0 0% 100% / 0.5), hsl(0 0% 5% / 0.5));
+      }
+
+      .tool-chip:hover {
+        border-color: light-dark(var(--accent-light), var(--accent-dark));
+        color: light-dark(var(--accent-light), var(--accent-dark));
+      }
+    }
+
+    @layer cta {
+      .cta-block {
+        margin-top: 4rem;
+        margin-bottom: 4rem;
+        text-align: center;
+      }
+
+      .cta-block p {
+        margin-bottom: 1.5rem;
+      }
+
+      .cta-buttons {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.875rem;
+        transition: opacity 0.2s;
+      }
+
+      .btn:hover { opacity: 0.85; }
+
+      .btn-primary {
+        background: light-dark(var(--accent-light), var(--accent-dark));
+        color: light-dark(#fff, #000);
+      }
+
+      .btn-secondary {
+        border: 1px solid color-mix(in hsl, canvasText, transparent 60%);
+        color: canvasText;
+      }
+    }
+
+    @layer footer {
+      .site-footer {
+        grid-column: 1;
+        width: 100%;
+        margin-top: 2rem;
+      }
+
+      .site-footer p {
+        font-size: 0.875rem;
+        opacity: 0.7;
+        text-align: center;
+        padding-block: 2rem;
+      }
+    }
+
+    @layer theme-toggle {
+      .theme-toggle {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        z-index: 100;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 1px solid color-mix(in hsl, canvasText, transparent 80%);
+        background: light-dark(hsl(0 0% 100% / 0.8), hsl(0 0% 0% / 0.8));
+        backdrop-filter: blur(8px);
+        cursor: pointer;
+        display: grid;
+        place-items: center;
+        color: canvasText;
+        padding: 0;
+        transition: border-color 0.2s;
+      }
+
+      .theme-toggle:is(:hover, :focus-visible) {
+        border-color: light-dark(var(--accent-light), var(--accent-dark));
+      }
+
+      .theme-toggle svg {
+        width: 20px;
+        height: 20px;
+        position: absolute;
+        transition: opacity 0.2s, transform 0.3s;
+      }
+
+      .theme-toggle__sun { opacity: 0; transform: rotate(-90deg) scale(0.5); }
+      .theme-toggle__moon { opacity: 1; transform: rotate(0deg) scale(1); }
+      [data-theme='dark'] .theme-toggle__sun { opacity: 1; transform: rotate(0deg) scale(1); }
+      [data-theme='dark'] .theme-toggle__moon { opacity: 0; transform: rotate(90deg) scale(0.5); }
+      [data-theme='light'] .theme-toggle__sun { opacity: 0; transform: rotate(-90deg) scale(0.5); }
+      [data-theme='light'] .theme-toggle__moon { opacity: 1; transform: rotate(0deg) scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- SIDEBAR (same position as original TOC) -->
+    <aside class="side-col">
+      <nav aria-label="Navigation">
+        <h2>Navigate</h2>
+        <ol>
+          <li><a href="#top">Ariel Goldberg</a></li>
+          <li><a href="#skills">How I Work</a></li>
+          <li><a href="#story">The Short Version</a></li>
+          <li><a href="#projects">Work Samples</a></li>
+          <li><a href="#tools">Tools</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ol>
+      </nav>
+
+      <hr style="margin: 2rem 0; opacity: 0.15;">
+
+      <dl class="stats-block">
+        <dt>25+</dt><dd>Clients managed</dd>
+        <dt>$200K+</dt><dd>Annual portfolio</dd>
+        <dt>3</dt><dd>Products shipped</dd>
+      </dl>
+
+      <h2>Availability</h2>
+      <ul class="avail-list">
+        <li><span class="dot"></span> Open to work</li>
+        <li><span class="dot"></span> Toronto, Canada</li>
+        <li><span class="dot"></span> ~4 weeks from offer</li>
+        <li><span class="dot"></span> Work permit to 2028</li>
+      </ul>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-col">
+      <header id="top">
+        <p class="author-line">Ariel Goldberg.</p>
+        <h1 class="tagline fluid">Building Together With AI</h1>
+      </header>
+
+      <main>
+        <article>
+          <p class="intro">I'm a design engineer and AI builder based in Toronto, Canada. I build together with AI — turning ideas into tools, interfaces, and workflows that are practical, clear, and human-centered.</p>
+
+          <section id="skills">
+            <h2>How I Work in 2026</h2>
+            <div class="skill-grid">
+              <div class="skill-card">
+                <span class="skill-card__emoji">&#x2728;</span>
+                <h3>AI-native building</h3>
+                <p>Claude, GPT-4, and custom prompt engineering for code generation, workflow design, and product thinking.</p>
+                <ul class="skill-tags">
+                  <li>Claude Code</li>
+                  <li>OpenAI API</li>
+                  <li>Prompt Design</li>
+                </ul>
+              </div>
+              <div class="skill-card">
+                <span class="skill-card__emoji">&#x1F3A8;</span>
+                <h3>Design engineering</h3>
+                <p>Interfaces that feel right — motion, layout, interaction, accessibility. The craft is in the details.</p>
+                <ul class="skill-tags">
+                  <li>CSS / TypeScript</li>
+                  <li>Scroll Animations</li>
+                  <li>Figma to Code</li>
+                </ul>
+              </div>
+              <div class="skill-card">
+                <span class="skill-card__emoji">&#x2699;&#xFE0F;</span>
+                <h3>Systems & automation</h3>
+                <p>I wire tools together so teams stop doing repetitive work. API integrations to full workflow automation.</p>
+                <ul class="skill-tags">
+                  <li>Vercel / Node.js</li>
+                  <li>Zapier / Make.com</li>
+                  <li>REST APIs</li>
+                </ul>
+              </div>
+              <div class="skill-card">
+                <span class="skill-card__emoji">&#x1F91D;</span>
+                <h3>Client success</h3>
+                <p>25+ accounts managed end-to-end. Onboarding, implementation, training, and ongoing support.</p>
+                <ul class="skill-tags">
+                  <li>HubSpot</li>
+                  <li>Intercom</li>
+                  <li>Zendesk</li>
+                </ul>
+              </div>
+              <div class="skill-card">
+                <span class="skill-card__emoji">&#x1F4DE;</span>
+                <h3>Voice AI</h3>
+                <p>AI voice agents for real phone calls. IVR replacement, appointment booking, and support triage.</p>
+                <ul class="skill-tags">
+                  <li>Twilio</li>
+                  <li>ElevenLabs</li>
+                  <li>Telpilot</li>
+                </ul>
+              </div>
+              <div class="skill-card">
+                <span class="skill-card__emoji">&#x1F680;</span>
+                <h3>Rapid shipping</h3>
+                <p>Idea to working product in days, not months. Ship fast, iterate with real feedback.</p>
+                <ul class="skill-tags">
+                  <li>Vercel</li>
+                  <li>GitHub</li>
+                  <li>Playwright</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <section id="story">
+            <h2>The Short Version</h2>
+            <p>I'm Ariel Goldberg. My work is about what becomes possible when you build with AI instead of just talking about it.</p>
+            <p>Not demos. Not decks. Actual things that run, that work, that people can use today.</p>
+            <p>I got here by building. The fastest way I know to understand something is to make it real.</p>
+          </section>
+
+          <section id="projects">
+            <h2>Work Samples</h2>
+            <p>Live projects I designed and built — AI platforms, voice agents, and this portfolio site.</p>
+            <ul class="project-list">
+              <li>
+                <a href="https://simplegenai.com" target="_blank" class="project-item">
+                  <div class="project-icon">&#x1F916;</div>
+                  <div class="project-info">
+                    <h3>SimpleGenAI</h3>
+                    <p>AI consulting platform with chat assistant, multilingual support, and workshop booking.</p>
+                  </div>
+                  <span class="project-link">Visit &rarr;</span>
+                </a>
+              </li>
+              <li>
+                <a href="https://telpilot.com" target="_blank" class="project-item">
+                  <div class="project-icon">&#x1F4F1;</div>
+                  <div class="project-info">
+                    <h3>Telpilot</h3>
+                    <p>AI voice agent platform — connect intelligent voice bots to your phone numbers.</p>
+                  </div>
+                  <span class="project-link">Visit &rarr;</span>
+                </a>
+              </li>
+              <li>
+                <a href="index.html" class="project-item">
+                  <div class="project-icon">&#x1F4A0;</div>
+                  <div class="project-info">
+                    <h3>Portfolio v1</h3>
+                    <p>SVG text animations, scroll-driven effects, interactive CSS demos, AI onboarding wizard.</p>
+                  </div>
+                  <span class="project-link">View &rarr;</span>
+                </a>
+              </li>
+            </ul>
+          </section>
+
+          <hr>
+
+          <section id="tools">
+            <h2>Tools I Use Daily</h2>
+            <p>Across AI, dev, product, and client management.</p>
+            <div class="tool-chips">
+              <span class="tool-chip">&#x1F9E0; Claude</span>
+              <span class="tool-chip">&#x1F4AC; ChatGPT</span>
+              <span class="tool-chip">&#x1F3A4; ElevenLabs</span>
+              <span class="tool-chip">&#x1F527; Make.com</span>
+              <span class="tool-chip">&#x26A1; Zapier</span>
+              <span class="tool-chip">&#x1F4CB; Notion</span>
+              <span class="tool-chip">&#x1F4E7; HubSpot</span>
+              <span class="tool-chip">&#x1F4AC; Intercom</span>
+              <span class="tool-chip">&#x1F4AC; Zendesk</span>
+              <span class="tool-chip">&#x1F4DE; Twilio</span>
+              <span class="tool-chip">&#x1F4BB; TypeScript</span>
+              <span class="tool-chip">&#x25B2; Vercel</span>
+              <span class="tool-chip">&#x1F431; GitHub</span>
+              <span class="tool-chip">&#x1F3A8; Figma</span>
+              <span class="tool-chip">&#x1F4AC; Slack</span>
+              <span class="tool-chip">&#x1F310; Node.js</span>
+            </div>
+          </section>
+
+          <hr>
+
+          <section>
+            <p>Different systems, same job: make the technology understandable, useful, and human. That is the work I care about.</p>
+          </section>
+        </article>
+      </main>
+
+      <hr>
+
+      <div id="contact" class="cta-block">
+        <p><strong>Let's connect.</strong></p>
+        <div class="cta-buttons">
+          <a href="mailto:iarigoldberg@gmail.com" class="btn btn-primary">Get in Touch</a>
+          <a href="https://linkedin.com/in/ariel--goldberg" target="_blank" class="btn btn-secondary">LinkedIn</a>
+          <a href="https://github.com/Goldxberg" target="_blank" class="btn btn-secondary">GitHub</a>
+        </div>
+      </div>
+
+      <footer class="site-footer">
+        <hr>
+        <p>&copy; Ariel Goldberg 2026 &middot; Toronto, Canada</p>
+      </footer>
+    </div>
+  </div>
+
+  <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+    <svg class="theme-toggle__sun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+    </svg>
+    <svg class="theme-toggle__moon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+    </svg>
+  </button>
+
+  <script>
+    const toggle = document.getElementById('theme-toggle');
+    const root = document.documentElement;
+    const saved = localStorage.getItem('theme');
+    if (saved) root.dataset.theme = saved;
+
+    toggle.addEventListener('click', () => {
+      const current = root.dataset.theme;
+      let next;
+      if (!current || current === 'system') {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        next = prefersDark ? 'light' : 'dark';
+      } else {
+        next = current === 'dark' ? 'light' : 'dark';
+      }
+      if (document.startViewTransition) {
+        document.startViewTransition(() => { root.dataset.theme = next; });
+      } else {
+        root.dataset.theme = next;
+      }
+      localStorage.setItem('theme', next);
+    });
+  </script>
+</body>
+</html>

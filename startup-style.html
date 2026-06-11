@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ariel Goldberg — AI Builder Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #1a1f36;
+      --navy-light: #2d3250;
+      --blue: #4a6cf7;
+      --blue-light: #eef2ff;
+      --teal: #0ea5e9;
+      --teal-light: #e0f7ff;
+      --green: #22c55e;
+      --green-light: #dcfce7;
+      --orange: #f97316;
+      --orange-light: #fff7ed;
+      --red: #ef4444;
+      --red-light: #fef2f2;
+      --purple: #8b5cf6;
+      --purple-light: #f3f0ff;
+      --pink: #ec4899;
+      --bg: #f7f8fc;
+      --white: #ffffff;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-400: #9ca3af;
+      --gray-500: #6b7280;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+      --shadow: 0 2px 8px rgba(0,0,0,0.08);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
+      --shadow-lg: 0 8px 30px rgba(0,0,0,0.12);
+      --radius: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+    }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: var(--bg);
+      color: var(--gray-800);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ══════════════════════════════════════════
+       NAVIGATION
+       ══════════════════════════════════════════ */
+    .topbar {
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-200);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .topbar-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1.25rem;
+      color: var(--navy);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logo-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--blue);
+      display: inline-block;
+    }
+
+    .nav-menu {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      list-style: none;
+    }
+
+    .nav-menu a {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--gray-600);
+      text-decoration: none;
+      padding: 0.5rem 0.875rem;
+      border-radius: 8px;
+      transition: all 0.15s;
+    }
+
+    .nav-menu a:hover {
+      background: var(--gray-100);
+      color: var(--navy);
+    }
+
+    .nav-badge {
+      font-size: 0.625rem;
+      font-weight: 700;
+      background: var(--orange);
+      color: #fff;
+      padding: 0.125rem 0.375rem;
+      border-radius: 4px;
+      margin-left: 0.25rem;
+      text-transform: uppercase;
+      vertical-align: middle;
+    }
+
+    .nav-cta-btn {
+      background: var(--blue) !important;
+      color: #fff !important;
+      padding: 0.5rem 1.25rem !important;
+      border-radius: 8px !important;
+      font-weight: 600 !important;
+    }
+    .nav-cta-btn:hover { opacity: 0.9; background: var(--blue) !important; }
+
+    /* ══════════════════════════════════════════
+       HERO
+       ══════════════════════════════════════════ */
+    .hero {
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .hero-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 4rem 1.5rem 3.5rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    .hero-text h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2.75rem;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      color: var(--navy);
+      margin-bottom: 1rem;
+    }
+
+    .hero-text h1 span {
+      color: var(--blue);
+    }
+
+    .hero-text .subtitle {
+      font-size: 1.125rem;
+      color: var(--gray-500);
+      margin-bottom: 2rem;
+      line-height: 1.7;
+      max-width: 460px;
+    }
+
+    .hero-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.625rem;
+      margin-bottom: 2rem;
+    }
+
+    .hero-features li {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      font-size: 0.9375rem;
+      color: var(--gray-700);
+    }
+
+    .hero-features li .emoji {
+      font-size: 1.125rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--white);
+      border: 2px solid var(--gray-200);
+      border-radius: 8px;
+      padding: 0.75rem 1.5rem;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+    }
+    .hero-cta:hover {
+      border-color: var(--blue);
+      box-shadow: var(--shadow-md);
+    }
+
+    .social-proof {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+      font-size: 0.8125rem;
+      color: var(--gray-400);
+    }
+
+    .avatar-row {
+      display: flex;
+    }
+    .avatar-row span {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid var(--white);
+      display: grid;
+      place-items: center;
+      font-size: 0.625rem;
+      font-weight: 700;
+      margin-left: -6px;
+    }
+    .avatar-row span:first-child { margin-left: 0; }
+    .avatar-row span:nth-child(1) { background: #dbeafe; color: #3b82f6; }
+    .avatar-row span:nth-child(2) { background: #fce7f3; color: #ec4899; }
+    .avatar-row span:nth-child(3) { background: #d1fae5; color: #10b981; }
+    .avatar-row span:nth-child(4) { background: #ede9fe; color: #8b5cf6; }
+    .avatar-row span:nth-child(5) { background: #ffedd5; color: #f97316; }
+
+    /* Hero right - decorative card stack */
+    .hero-visual {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      position: relative;
+    }
+
+    .float-card {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .float-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .float-card__icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 1.375rem;
+      flex-shrink: 0;
+    }
+
+    .float-card__text h4 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 0.125rem;
+    }
+
+    .float-card__text p {
+      font-size: 0.75rem;
+      color: var(--gray-400);
+    }
+
+    .float-card__badge {
+      margin-left: auto;
+      font-size: 0.625rem;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    /* ══════════════════════════════════════════
+       CATEGORY GRID
+       ══════════════════════════════════════════ */
+    .categories {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+
+    .section-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 0.375rem;
+    }
+
+    .section-subtitle {
+      font-size: 0.9375rem;
+      color: var(--gray-400);
+      margin-bottom: 2rem;
+    }
+
+    .cat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+    }
+
+    .cat-item {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cat-item:hover {
+      border-color: var(--blue);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .cat-item__emoji {
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .cat-item h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 0.25rem;
+    }
+
+    .cat-item p {
+      font-size: 0.75rem;
+      color: var(--gray-400);
+      line-height: 1.5;
+    }
+
+    .cat-item__tag {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: 0.5625rem;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .tag-new { background: var(--green-light); color: var(--green); }
+    .tag-popular { background: var(--orange-light); color: var(--orange); }
+    .tag-beta { background: var(--purple-light); color: var(--purple); }
+    .tag-hot { background: var(--red-light); color: var(--red); }
+    .tag-updated { background: var(--teal-light); color: var(--teal); }
+
+    /* ══════════════════════════════════════════
+       CONTENT COLUMNS (blog + sidebar)
+       ══════════════════════════════════════════ */
+    .content-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem 3rem;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 2rem;
+    }
+
+    /* Blog cards */
+    .blog-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+
+    .blog-header h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .blog-header a {
+      font-size: 0.8125rem;
+      color: var(--blue);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .blog-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .blog-card {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      display: flex;
+      gap: 1.25rem;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s;
+    }
+
+    .blog-card:hover {
+      border-color: var(--blue);
+      box-shadow: var(--shadow-md);
+    }
+
+    .blog-card__thumb {
+      width: 100px;
+      height: 80px;
+      border-radius: 8px;
+      background: var(--gray-100);
+      display: grid;
+      place-items: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .blog-card__body h3 {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 0.375rem;
+      line-height: 1.4;
+    }
+
+    .blog-card__meta {
+      font-size: 0.75rem;
+      color: var(--gray-400);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .blog-card__meta .author-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--blue-light);
+      display: inline-grid;
+      place-items: center;
+      font-size: 0.5rem;
+      font-weight: 700;
+      color: var(--blue);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .sidebar-card {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+    }
+
+    .sidebar-card h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .sidebar-list {
+      list-style: none;
+    }
+
+    .sidebar-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.625rem 0;
+      border-bottom: 1px solid var(--gray-100);
+      font-size: 0.8125rem;
+    }
+
+    .sidebar-list li:last-child { border-bottom: none; }
+
+    .sidebar-list .amount {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      color: var(--green);
+      font-size: 0.8125rem;
+    }
+
+    .sidebar-list .date {
+      font-size: 0.6875rem;
+      color: var(--gray-400);
+    }
+
+    /* Events sidebar */
+    .event-item {
+      display: flex;
+      gap: 0.75rem;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--gray-100);
+    }
+    .event-item:last-child { border-bottom: none; }
+
+    .event-date-box {
+      width: 44px;
+      height: 44px;
+      background: var(--blue-light);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .event-date-box .day {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--blue);
+      line-height: 1;
+    }
+
+    .event-date-box .month {
+      font-size: 0.5625rem;
+      font-weight: 600;
+      color: var(--blue);
+      text-transform: uppercase;
+    }
+
+    .event-info h4 {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--navy);
+      line-height: 1.3;
+    }
+
+    .event-info p {
+      font-size: 0.6875rem;
+      color: var(--gray-400);
+    }
+
+    .event-hot {
+      font-size: 0.5625rem;
+      font-weight: 700;
+      background: var(--red-light);
+      color: var(--red);
+      padding: 0.125rem 0.375rem;
+      border-radius: 4px;
+      margin-left: 0.375rem;
+    }
+
+    /* ══════════════════════════════════════════
+       TOOLS STRIP
+       ══════════════════════════════════════════ */
+    .tools-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem 3rem;
+    }
+
+    .tools-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .tool-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 100px;
+      padding: 0.5rem 1rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--gray-600);
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .tool-pill:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+      box-shadow: var(--shadow);
+    }
+
+    .tool-pill .icon { font-size: 1.125rem; }
+
+    .tool-verified {
+      font-size: 0.5625rem;
+      font-weight: 700;
+      background: var(--green-light);
+      color: var(--green);
+      padding: 0.125rem 0.375rem;
+      border-radius: 3px;
+    }
+
+    /* ══════════════════════════════════════════
+       SPONSOR BANNER
+       ══════════════════════════════════════════ */
+    .sponsor-strip {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem 3rem;
+    }
+
+    .sponsor-card {
+      background: linear-gradient(135deg, var(--navy), var(--navy-light));
+      border-radius: var(--radius-lg);
+      padding: 2.5rem 3rem;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+    }
+
+    .sponsor-card h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .sponsor-card p {
+      font-size: 0.9375rem;
+      opacity: 0.8;
+      max-width: 500px;
+    }
+
+    .sponsor-btn {
+      background: var(--white);
+      color: var(--navy);
+      padding: 0.75rem 2rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.875rem;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: transform 0.2s;
+    }
+    .sponsor-btn:hover { transform: translateY(-1px); }
+
+    /* ══════════════════════════════════════════
+       FOOTER
+       ══════════════════════════════════════════ */
+    footer {
+      background: var(--white);
+      border-top: 1px solid var(--gray-200);
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 2rem;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .footer-brand p {
+      font-size: 0.8125rem;
+      color: var(--gray-400);
+      line-height: 1.6;
+      margin-top: 0.75rem;
+      max-width: 300px;
+    }
+
+    .footer-col h4 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--gray-400);
+      margin-bottom: 1rem;
+    }
+
+    .footer-col ul {
+      list-style: none;
+    }
+
+    .footer-col li {
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-col a {
+      font-size: 0.8125rem;
+      color: var(--gray-600);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .footer-col a:hover { color: var(--blue); }
+
+    .footer-bottom {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1.25rem 1.5rem;
+      border-top: 1px solid var(--gray-100);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      color: var(--gray-400);
+    }
+
+    .footer-social {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .footer-social a {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--gray-100);
+      display: grid;
+      place-items: center;
+      color: var(--gray-500);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: all 0.15s;
+    }
+    .footer-social a:hover { background: var(--blue-light); color: var(--blue); }
+
+    /* ══════════════════════════════════════════
+       FLOATING DECORATIONS
+       ══════════════════════════════════════════ */
+    .floater {
+      position: fixed;
+      pointer-events: none;
+      z-index: -1;
+      opacity: 0.06;
+      font-size: 3rem;
+      animation: float 20s ease-in-out infinite;
+    }
+
+    .floater:nth-child(1) { top: 15%; left: 5%; animation-delay: 0s; }
+    .floater:nth-child(2) { top: 40%; right: 3%; animation-delay: -5s; }
+    .floater:nth-child(3) { top: 70%; left: 8%; animation-delay: -10s; }
+    .floater:nth-child(4) { bottom: 10%; right: 10%; animation-delay: -15s; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-20px) rotate(5deg); }
+      50% { transform: translateY(0) rotate(0deg); }
+      75% { transform: translateY(20px) rotate(-5deg); }
+    }
+
+    /* ══════════════════════════════════════════
+       RESPONSIVE
+       ══════════════════════════════════════════ */
+    @media (max-width: 900px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-visual { display: none; }
+      .cat-grid { grid-template-columns: repeat(2, 1fr); }
+      .content-section { grid-template-columns: 1fr; }
+      .footer-inner { grid-template-columns: 1fr 1fr; }
+      .sponsor-card { flex-direction: column; text-align: center; }
+      .nav-menu { display: none; }
+    }
+
+    @media (max-width: 600px) {
+      .cat-grid { grid-template-columns: 1fr; }
+      .hero-text h1 { font-size: 2rem; }
+      .footer-inner { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating decorations like lastartup -->
+  <div class="floater">&#x1F680;</div>
+  <div class="floater">&#x2728;</div>
+  <div class="floater">&#x1F4A1;</div>
+  <div class="floater">&#x1F3AF;</div>
+
+  <!-- ── NAV ──────────────────────────────── -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="#" class="logo"><span class="logo-dot"></span>ariel goldberg</a>
+      <ul class="nav-menu">
+        <li><a href="#skills">What I Do</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#blog">Articles</a></li>
+        <li><a href="#tools">Tools</a></li>
+        <li><a href="#events">Events <span class="nav-badge">New</span></a></li>
+        <li><a href="index.html">Portfolio</a></li>
+        <li><a href="mailto:iarigoldberg@gmail.com" class="nav-cta-btn">Get in Touch</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- ── HERO ─────────────────────────────── -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <h1>Like a toolkit.<br><span>But for building with AI.</span></h1>
+        <p class="subtitle">Your first stop for AI implementation, design engineering, and workflow automation. Real tools, real results, no fluff.</p>
+        <ul class="hero-features">
+          <li><span class="emoji">&#x1F513;</span> Full-stack AI implementation</li>
+          <li><span class="emoji">&#x1F91D;</span> End-to-end client management</li>
+          <li><span class="emoji">&#x1F3A8;</span> Crafted interfaces & design systems</li>
+          <li><span class="emoji">&#x1F381;</span> 3 shipped products and counting</li>
+          <li><span class="emoji">&#x1F60A;</span> Open to work in Canada</li>
+        </ul>
+        <a href="mailto:iarigoldberg@gmail.com" class="hero-cta">
+          &#x2709;&#xFE0F;&nbsp; Let's connect — iarigoldberg@gmail.com
+        </a>
+        <div class="social-proof">
+          <div class="avatar-row">
+            <span>AG</span>
+            <span>RS</span>
+            <span>TP</span>
+            <span>DK</span>
+            <span>+</span>
+          </div>
+          20+ clients served &middot; $200K+ portfolio
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="float-card">
+          <div class="float-card__icon" style="background: var(--blue-light);">&#x2728;</div>
+          <div class="float-card__text">
+            <h4>AI Implementation</h4>
+            <p>Claude, GPT-4, Voice Agents</p>
+          </div>
+          <span class="float-card__badge" style="background:var(--green-light);color:var(--green);">Active</span>
+        </div>
+        <div class="float-card">
+          <div class="float-card__icon" style="background: var(--purple-light);">&#x1F3A8;</div>
+          <div class="float-card__text">
+            <h4>Design Engineering</h4>
+            <p>CSS, Animations, Figma to Code</p>
+          </div>
+          <span class="float-card__badge" style="background:var(--blue-light);color:var(--blue);">Core</span>
+        </div>
+        <div class="float-card">
+          <div class="float-card__icon" style="background: var(--orange-light);">&#x2699;&#xFE0F;</div>
+          <div class="float-card__text">
+            <h4>Automation & APIs</h4>
+            <p>Zapier, Make.com, REST</p>
+          </div>
+          <span class="float-card__badge" style="background:var(--orange-light);color:var(--orange);">Popular</span>
+        </div>
+        <div class="float-card">
+          <div class="float-card__icon" style="background: var(--green-light);">&#x1F4DE;</div>
+          <div class="float-card__text">
+            <h4>Voice AI — Telpilot</h4>
+            <p>Twilio + ElevenLabs</p>
+          </div>
+          <span class="float-card__badge" style="background:var(--red-light);color:var(--red);">&#x1F525; Live</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CATEGORIES ───────────────────────── -->
+  <section class="categories" id="skills">
+    <h2 class="section-title">What I Do</h2>
+    <p class="section-subtitle">Explore my skills and areas of focus</p>
+    <div class="cat-grid">
+      <a href="#" class="cat-item">
+        <span class="cat-item__emoji">&#x1F4B0;</span>
+        <h3>AI Strategy & Implementation</h3>
+        <p>From concept to production AI tools for real business use cases.</p>
+        <span class="cat-item__tag tag-popular">Core</span>
+      </a>
+      <a href="#" class="cat-item">
+        <span class="cat-item__emoji">&#x1F680;</span>
+        <h3>Product Shipping</h3>
+        <p>Rapid prototyping — idea to working product in days, not months.</p>
+        <span class="cat-item__tag tag-updated">Updated</span>
+      </a>
+      <a href="#" class="cat-item">
+        <span class="cat-item__emoji">&#x1F9E0;</span>
+        <h3>Prompt Engineering</h3>
+        <p>Designing reliable prompts for Claude, GPT-4, and custom agents.</p>
+        <span class="cat-item__tag tag-new">New</span>
+      </a>
+      <a href="#" class="cat-item">
+        <span class="cat-item__emoji">&#x1F3A8;</span>
+        <h3>Design Engineering</h3>
+        <p>Scroll-driven animations, micro-interactions, and crafted UIs.</p>
+      </a>
+      <a href="#" class="cat-item">
+        <span class="cat-item__emoji">&#x1F91D;</span>
+        <h3>Client Success</h3>
+        <p>Onboarding, implementation, training — end-to-end relationships.</p>
+        <span class="cat-item__tag tag-beta">25+ clients</span>
+      </a>
+      <a href="#" class="cat-item">
+        <span class="cat-item__emoji">&#x1F468;&#x200D;&#x1F527;</span>
+        <h3>Workflow Automation</h3>
+        <p>API integrations, Zapier, Make.com — eliminate repetitive work.</p>
+        <span class="cat-item__tag tag-popular">Popular</span>
+      </a>
+      <a href="#" class="cat-item">
+        <span class="cat-item__emoji">&#x1F6E0;&#xFE0F;</span>
+        <h3>Tools & Stack</h3>
+        <p>TypeScript, Node.js, Vercel, Figma, Claude Code, and more.</p>
+      </a>
+      <a href="#" class="cat-item">
+        <span class="cat-item__emoji">&#x1F4DE;</span>
+        <h3>Voice AI Agents</h3>
+        <p>AI phone bots for support, booking, and triage. Twilio + ElevenLabs.</p>
+        <span class="cat-item__tag tag-hot">&#x1F525; Live product</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ── BLOG + SIDEBAR ───────────────────── -->
+  <section class="content-section" id="blog">
+    <div class="blog-col">
+      <div class="blog-header">
+        <h2>&#x1F4DD; Recent Work & Writing</h2>
+        <a href="#">View all &rarr;</a>
+      </div>
+      <div class="blog-list">
+        <a href="https://simplegenai.com" target="_blank" class="blog-card">
+          <div class="blog-card__thumb" style="background:var(--blue-light);">&#x1F916;</div>
+          <div class="blog-card__body">
+            <h3>SimpleGenAI — AI Consulting Platform</h3>
+            <p class="blog-card__meta">
+              <span class="author-dot">AG</span>
+              Ariel Goldberg &middot; AI Platform &middot; 2025
+            </p>
+          </div>
+        </a>
+        <a href="https://telpilot.com" target="_blank" class="blog-card">
+          <div class="blog-card__thumb" style="background:var(--green-light);">&#x1F4F1;</div>
+          <div class="blog-card__body">
+            <h3>Telpilot — AI Voice Agent Platform</h3>
+            <p class="blog-card__meta">
+              <span class="author-dot">AG</span>
+              Ariel Goldberg &middot; Voice AI &middot; 2025
+            </p>
+          </div>
+        </a>
+        <a href="index.html" class="blog-card">
+          <div class="blog-card__thumb" style="background:var(--purple-light);">&#x1F4A0;</div>
+          <div class="blog-card__body">
+            <h3>Portfolio — SVG Animations & CSS Demos</h3>
+            <p class="blog-card__meta">
+              <span class="author-dot">AG</span>
+              Ariel Goldberg &middot; Design Engineering &middot; 2026
+            </p>
+          </div>
+        </a>
+        <a href="magnetic-cards.html" class="blog-card">
+          <div class="blog-card__thumb" style="background:var(--orange-light);">&#x1FA84;</div>
+          <div class="blog-card__body">
+            <h3>Magnetic Cards — 3D Perspective + Glow</h3>
+            <p class="blog-card__meta">
+              <span class="author-dot">AG</span>
+              Ariel Goldberg &middot; Interactive Demo &middot; 2026
+            </p>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <div class="sidebar" id="events">
+      <!-- Stats card like funding rounds -->
+      <div class="sidebar-card">
+        <h3>&#x1F4B0; Career Highlights</h3>
+        <ul class="sidebar-list">
+          <li>
+            <span>Client accounts managed</span>
+            <span class="amount">25+</span>
+          </li>
+          <li>
+            <span>Annual portfolio value</span>
+            <span class="amount">$200K+</span>
+          </li>
+          <li>
+            <span>Products shipped</span>
+            <span class="amount">3</span>
+          </li>
+          <li>
+            <span>Onboarding workflows built</span>
+            <span class="amount">50+</span>
+          </li>
+          <li>
+            <span>Automation flows created</span>
+            <span class="amount">100+</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Events like lastartup -->
+      <div class="sidebar-card">
+        <h3>&#x1F4C5; Available For</h3>
+        <div class="event-item">
+          <div class="event-date-box">
+            <span class="day">Q2</span>
+            <span class="month">2026</span>
+          </div>
+          <div class="event-info">
+            <h4>Full-time role <span class="event-hot">&#x1F525; Now</span></h4>
+            <p>Implementation, CS, TAM in Canada</p>
+          </div>
+        </div>
+        <div class="event-item">
+          <div class="event-date-box">
+            <span class="day">4</span>
+            <span class="month">Weeks</span>
+          </div>
+          <div class="event-info">
+            <h4>Start date</h4>
+            <p>~4 weeks from offer</p>
+          </div>
+        </div>
+        <div class="event-item">
+          <div class="event-date-box">
+            <span class="day">&#x2713;</span>
+            <span class="month">Valid</span>
+          </div>
+          <div class="event-info">
+            <h4>Work authorization</h4>
+            <p>Permit valid to 2028, no sponsorship</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TOOLS ────────────────────────────── -->
+  <section class="tools-section" id="tools">
+    <h2 class="section-title">&#x1F6E0;&#xFE0F; Tools & Technologies</h2>
+    <p class="section-subtitle">Daily drivers across AI, dev, and product</p>
+    <div class="tools-grid">
+      <span class="tool-pill"><span class="icon">&#x1F9E0;</span> Claude <span class="tool-verified">&#x2713; Daily</span></span>
+      <span class="tool-pill"><span class="icon">&#x1F4AC;</span> ChatGPT <span class="tool-verified">&#x2713; Daily</span></span>
+      <span class="tool-pill"><span class="icon">&#x1F3A4;</span> ElevenLabs</span>
+      <span class="tool-pill"><span class="icon">&#x1F527;</span> Make.com</span>
+      <span class="tool-pill"><span class="icon">&#x26A1;</span> Zapier</span>
+      <span class="tool-pill"><span class="icon">&#x1F4CB;</span> Notion</span>
+      <span class="tool-pill"><span class="icon">&#x1F4E7;</span> HubSpot</span>
+      <span class="tool-pill"><span class="icon">&#x1F4AC;</span> Intercom</span>
+      <span class="tool-pill"><span class="icon">&#x1F4AC;</span> Zendesk</span>
+      <span class="tool-pill"><span class="icon">&#x1F4DE;</span> Twilio</span>
+      <span class="tool-pill"><span class="icon">&#x1F4BB;</span> TypeScript</span>
+      <span class="tool-pill"><span class="icon">&#x25B2;</span> Vercel</span>
+      <span class="tool-pill"><span class="icon">&#x1F431;</span> GitHub</span>
+      <span class="tool-pill"><span class="icon">&#x1F3A8;</span> Figma</span>
+      <span class="tool-pill"><span class="icon">&#x1F4AC;</span> Slack</span>
+      <span class="tool-pill"><span class="icon">&#x1F310;</span> Node.js</span>
+      <span class="tool-pill"><span class="icon">&#x1F40D;</span> Python</span>
+    </div>
+  </section>
+
+  <!-- ── SPONSOR / CTA BANNER ─────────────── -->
+  <section class="sponsor-strip">
+    <div class="sponsor-card">
+      <div>
+        <h3>Let's build something together</h3>
+        <p>I'm looking for my next role — Implementation Specialist, Customer Success, or Technical Account Manager in Canada. Let's talk.</p>
+      </div>
+      <a href="mailto:iarigoldberg@gmail.com" class="sponsor-btn">iarigoldberg@gmail.com &rarr;</a>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ───────────────────────────── -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a href="#" class="logo"><span class="logo-dot"></span>ariel goldberg</a>
+        <p>Building together with AI — tools, interfaces, and workflows that are practical, clear, and human-centered. Based in Toronto, Canada.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Projects</h4>
+        <ul>
+          <li><a href="https://simplegenai.com" target="_blank">SimpleGenAI</a></li>
+          <li><a href="https://telpilot.com" target="_blank">Telpilot</a></li>
+          <li><a href="index.html">Portfolio</a></li>
+          <li><a href="magnetic-cards.html">Magnetic Cards</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Resources</h4>
+        <ul>
+          <li><a href="#">Resume</a></li>
+          <li><a href="#tools">Tools I Use</a></li>
+          <li><a href="#blog">Work Samples</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Connect</h4>
+        <ul>
+          <li><a href="mailto:iarigoldberg@gmail.com">Email</a></li>
+          <li><a href="https://linkedin.com/in/ariel--goldberg" target="_blank">LinkedIn</a></li>
+          <li><a href="https://github.com/Goldxberg" target="_blank">GitHub</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; Ariel Goldberg 2026 &middot; Toronto, Canada</span>
+      <div class="footer-social">
+        <a href="mailto:iarigoldberg@gmail.com" title="Email">&#x2709;</a>
+        <a href="https://linkedin.com/in/ariel--goldberg" target="_blank" title="LinkedIn">in</a>
+        <a href="https://github.com/Goldxberg" target="_blank" title="GitHub">&#x1F431;</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Magnetic Cards — Ariel Goldberg</title>
+  <meta name="description" content="Interactive magnetic cards with 3D perspective, glow tracking, and spring physics — pure CSS + minimal JS.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@100..900&display=swap" rel="stylesheet">
+  <style>
+    @import url('https://unpkg.com/normalize.css') layer(normalize);
+
+    @layer normalize, base, cards, theme-toggle;
+
+    @layer base {
+      :root {
+        --accent-light: hsl(0, 100%, 56%);
+        --accent-dark: hsl(164, 100%, 56%);
+        --accent: light-dark(var(--accent-light), var(--accent-dark));
+        --surface: light-dark(hsl(0 0% 97%), hsl(0 0% 6%));
+        --surface-raised: light-dark(hsl(0 0% 100%), hsl(0 0% 9%));
+        --border: light-dark(hsl(0 0% 88%), hsl(0 0% 16%));
+        --text: light-dark(hsl(0 0% 15%), hsl(0 0% 92%));
+        --text-muted: light-dark(hsl(0 0% 45%), hsl(0 0% 55%));
+        --glow-opacity: light-dark(0.06, 0.12);
+      }
+
+      html { color-scheme: light dark; }
+      [data-theme='light'] { color-scheme: light only; }
+      [data-theme='dark'] { color-scheme: dark only; }
+
+      *, *::before, *::after { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--surface);
+        color: var(--text);
+        font-family: 'Inter', system-ui, sans-serif;
+        letter-spacing: -0.02em;
+        display: grid;
+        place-items: center;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        --size: 45px;
+        --line: color-mix(in hsl, canvasText, transparent 90%);
+        content: '';
+        height: 100vh;
+        width: 100vw;
+        position: fixed;
+        background:
+          linear-gradient(90deg, var(--line) 1px, transparent 1px var(--size))
+            calc(var(--size) * 0.36) 50% / var(--size) var(--size),
+          linear-gradient(var(--line) 1px, transparent 1px var(--size))
+            0% calc(var(--size) * 0.32) / var(--size) var(--size);
+        mask: linear-gradient(-200deg, transparent 50%, white);
+        top: 0;
+        pointer-events: none;
+        z-index: -1;
+      }
+    }
+
+    @layer cards {
+      .page {
+        max-width: 1100px;
+        width: 100%;
+        padding: 4rem 2rem;
+      }
+
+      .page-header {
+        margin-bottom: 4rem;
+      }
+
+      .page-header h1 {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        font-weight: 700;
+        margin: 0 0 0.5rem;
+        line-height: 1.1;
+        letter-spacing: -0.04em;
+      }
+
+      .page-header p {
+        font-size: 1rem;
+        color: var(--text-muted);
+        margin: 0;
+        max-width: 50ch;
+        line-height: 1.5;
+      }
+
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        font-size: 0.8125rem;
+        color: var(--text-muted);
+        text-decoration: none;
+        margin-bottom: 2rem;
+        transition: color 0.2s;
+      }
+      .back-link:hover { color: var(--accent); }
+      .back-link svg { width: 16px; height: 16px; }
+
+      .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .card {
+        --mx: 0.5;
+        --my: 0.5;
+        --rx: 0;
+        --ry: 0;
+        position: relative;
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 2rem;
+        cursor: default;
+        transform-style: preserve-3d;
+        transform: perspective(800px) rotateX(var(--rx)) rotateY(var(--ry));
+        transition: transform 0.6s cubic-bezier(0.03, 0.98, 0.52, 0.99),
+                    border-color 0.3s,
+                    box-shadow 0.3s;
+        will-change: transform;
+      }
+
+      .card:hover {
+        border-color: color-mix(in srgb, var(--accent), transparent 50%);
+        box-shadow:
+          0 8px 32px color-mix(in srgb, var(--accent), transparent 85%),
+          0 2px 8px rgba(0,0,0,0.08);
+      }
+
+      /* Glow that follows the cursor */
+      .card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background: radial-gradient(
+          600px circle at calc(var(--mx) * 100%) calc(var(--my) * 100%),
+          var(--accent),
+          transparent 40%
+        );
+        opacity: 0;
+        transition: opacity 0.3s;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .card:hover::before {
+        opacity: var(--glow-opacity);
+      }
+
+      /* Shine line on border */
+      .card::after {
+        content: '';
+        position: absolute;
+        inset: -1px;
+        border-radius: inherit;
+        background: radial-gradient(
+          300px circle at calc(var(--mx) * 100%) calc(var(--my) * 100%),
+          color-mix(in srgb, var(--accent), transparent 30%),
+          transparent 40%
+        );
+        opacity: 0;
+        transition: opacity 0.3s;
+        pointer-events: none;
+        z-index: -1;
+        mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+        mask-composite: exclude;
+        padding: 1px;
+      }
+
+      .card:hover::after {
+        opacity: 1;
+      }
+
+      .card > * {
+        position: relative;
+        z-index: 1;
+      }
+
+      .card__icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: color-mix(in srgb, var(--accent), transparent 88%);
+        display: grid;
+        place-items: center;
+        margin-bottom: 1.25rem;
+        font-size: 1.25rem;
+        color: var(--accent);
+        transition: background 0.3s, transform 0.6s cubic-bezier(0.03, 0.98, 0.52, 0.99);
+        transform: translateZ(20px);
+      }
+
+      .card:hover .card__icon {
+        background: color-mix(in srgb, var(--accent), transparent 78%);
+      }
+
+      .card__icon svg {
+        width: 24px;
+        height: 24px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 1.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .card h3 {
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin: 0 0 0.5rem;
+        letter-spacing: -0.02em;
+        transform: translateZ(15px);
+      }
+
+      .card p {
+        font-size: 0.875rem;
+        color: var(--text-muted);
+        line-height: 1.55;
+        margin: 0 0 1.25rem;
+        transform: translateZ(10px);
+      }
+
+      .card__tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.375rem;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+        transform: translateZ(8px);
+      }
+
+      .card__tags li {
+        font-size: 0.6875rem;
+        font-family: 'Geist Mono', monospace;
+        padding: 0.25rem 0.625rem;
+        border-radius: 100px;
+        background: color-mix(in srgb, var(--accent), transparent 90%);
+        color: var(--accent);
+        letter-spacing: 0;
+        white-space: nowrap;
+      }
+
+      /* Status indicator */
+      .card__status {
+        position: absolute;
+        top: 1.25rem;
+        right: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+        font-size: 0.6875rem;
+        color: var(--text-muted);
+        font-family: 'Geist Mono', monospace;
+        z-index: 1;
+      }
+
+      .card__status::before {
+        content: '';
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--accent);
+        animation: pulse 2s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
+      }
+
+      /* Feature section */
+      .features {
+        margin-top: 4rem;
+        padding-top: 4rem;
+        border-top: 1px solid var(--border);
+      }
+
+      .features h2 {
+        font-size: 0.75rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-muted);
+        margin: 0 0 1.5rem;
+      }
+
+      .features__list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1rem;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .features__list li {
+        font-size: 0.8125rem;
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        line-height: 1.4;
+      }
+
+      .features__list li::before {
+        content: '';
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: var(--accent);
+        flex-shrink: 0;
+      }
+
+      /* Footer */
+      .page-footer {
+        margin-top: 4rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.8125rem;
+        color: var(--text-muted);
+      }
+
+      .page-footer a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+
+      @media (max-width: 640px) {
+        .page { padding: 2rem 1rem; }
+        .card-grid { grid-template-columns: 1fr; }
+        .page-footer { flex-direction: column; gap: 0.5rem; }
+      }
+    }
+
+    @layer theme-toggle {
+      .theme-toggle {
+        position: fixed;
+        top: 1.5rem;
+        right: 1.5rem;
+        width: 40px;
+        height: 40px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--surface-raised);
+        color: var(--text-muted);
+        cursor: pointer;
+        display: grid;
+        place-items: center;
+        transition: border-color 0.2s, color 0.2s;
+        z-index: 100;
+      }
+      .theme-toggle:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .theme-toggle svg { width: 18px; height: 18px; }
+      [data-theme='dark'] .theme-toggle__sun { display: block; }
+      [data-theme='dark'] .theme-toggle__moon { display: none; }
+      [data-theme='light'] .theme-toggle__sun { display: none; }
+      [data-theme='light'] .theme-toggle__moon { display: block; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <a href="index.html" class="back-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"/></svg>
+      Back to portfolio
+    </a>
+
+    <div class="page-header">
+      <h1>What I Build With</h1>
+      <p>The tools, platforms, and systems I use daily to ship real products. Hover to explore.</p>
+    </div>
+
+    <ul class="card-grid">
+      <li class="card">
+        <span class="card__status">active</span>
+        <div class="card__icon">
+          <svg viewBox="0 0 24 24"><path d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 0 0-2.455 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z"/></svg>
+        </div>
+        <h3>AI & Language Models</h3>
+        <p>Claude, GPT-4, and custom prompt engineering for code generation, workflow design, and product thinking.</p>
+        <ul class="card__tags">
+          <li>Claude Code</li>
+          <li>OpenAI API</li>
+          <li>ElevenLabs</li>
+          <li>Prompt Design</li>
+        </ul>
+      </li>
+
+      <li class="card">
+        <span class="card__status">active</span>
+        <div class="card__icon">
+          <svg viewBox="0 0 24 24"><path d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5"/></svg>
+        </div>
+        <h3>Frontend Engineering</h3>
+        <p>Modern CSS, scroll-driven animations, view transitions, and interfaces that feel crafted, not generated.</p>
+        <ul class="card__tags">
+          <li>TypeScript</li>
+          <li>CSS Layers</li>
+          <li>Scroll Animations</li>
+          <li>Accessibility</li>
+        </ul>
+      </li>
+
+      <li class="card">
+        <span class="card__status">active</span>
+        <div class="card__icon">
+          <svg viewBox="0 0 24 24"><path d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125"/></svg>
+        </div>
+        <h3>Automation & APIs</h3>
+        <p>Connecting systems so teams stop doing repetitive work. From Zapier flows to custom API integrations.</p>
+        <ul class="card__tags">
+          <li>Make.com</li>
+          <li>Zapier</li>
+          <li>REST APIs</li>
+          <li>Node.js</li>
+        </ul>
+      </li>
+
+      <li class="card">
+        <span class="card__status">active</span>
+        <div class="card__icon">
+          <svg viewBox="0 0 24 24"><path d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z"/></svg>
+        </div>
+        <h3>Voice & Conversational AI</h3>
+        <p>Building AI voice agents that handle real phone calls — IVR replacement, appointment booking, support triage.</p>
+        <ul class="card__tags">
+          <li>Twilio</li>
+          <li>ElevenLabs</li>
+          <li>Telpilot</li>
+          <li>WebSocket</li>
+        </ul>
+      </li>
+
+      <li class="card">
+        <span class="card__status">active</span>
+        <div class="card__icon">
+          <svg viewBox="0 0 24 24"><path d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/></svg>
+        </div>
+        <h3>Client Systems & CRM</h3>
+        <p>Managing client relationships end-to-end. Onboarding flows, support systems, and knowledge bases that scale.</p>
+        <ul class="card__tags">
+          <li>HubSpot</li>
+          <li>Intercom</li>
+          <li>Zendesk</li>
+          <li>Notion</li>
+        </ul>
+      </li>
+
+      <li class="card">
+        <span class="card__status">active</span>
+        <div class="card__icon">
+          <svg viewBox="0 0 24 24"><path d="M2.25 15a4.5 4.5 0 0 0 4.5 4.5H18a3.75 3.75 0 0 0 1.332-7.257 3 3 0 0 0-3.758-3.848 5.25 5.25 0 0 0-10.233 2.33A4.502 4.502 0 0 0 2.25 15Z"/></svg>
+        </div>
+        <h3>Deploy & Ship</h3>
+        <p>From prototype to production. Fast deploys, monitoring, and infrastructure that stays out of the way.</p>
+        <ul class="card__tags">
+          <li>Vercel</li>
+          <li>GitHub</li>
+          <li>Sentry</li>
+          <li>Playwright</li>
+        </ul>
+      </li>
+    </ul>
+
+    <div class="features">
+      <h2>How these cards work</h2>
+      <ul class="features__list">
+        <li>3D perspective follows your cursor with spring physics</li>
+        <li>Radial glow tracks mouse position via CSS custom properties</li>
+        <li>Border shine uses mask-composite for the edge highlight</li>
+        <li>Icons float above the card surface using translateZ</li>
+        <li>Spring easing via cubic-bezier for natural deceleration</li>
+        <li>Zero dependencies — vanilla CSS + ~30 lines of JS</li>
+      </ul>
+    </div>
+
+    <footer class="page-footer">
+      <span>&copy; Ariel Goldberg 2026</span>
+      <a href="index.html">goldbergai.com</a>
+    </footer>
+  </div>
+
+  <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+    <svg class="theme-toggle__sun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+    </svg>
+    <svg class="theme-toggle__moon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+    </svg>
+  </button>
+
+  <script>
+    // Theme toggle
+    const toggle = document.getElementById('theme-toggle');
+    const root = document.documentElement;
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) root.dataset.theme = savedTheme;
+
+    toggle.addEventListener('click', () => {
+      const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      if (document.startViewTransition) {
+        document.startViewTransition(() => { root.dataset.theme = next; });
+      } else {
+        root.dataset.theme = next;
+      }
+      localStorage.setItem('theme', next);
+    });
+
+    // Magnetic card effect
+    document.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('mousemove', (event) => {
+        const rect = card.getBoundingClientRect();
+        const mx = (event.clientX - rect.left) / rect.width;
+        const my = (event.clientY - rect.top) / rect.height;
+
+        // Map to rotation: center = 0, edges = +/-12deg
+        const ry = (mx - 0.5) * 24;
+        const rx = (my - 0.5) * -24;
+
+        card.style.setProperty('--mx', mx);
+        card.style.setProperty('--my', my);
+        card.style.setProperty('--rx', `${rx}deg`);
+        card.style.setProperty('--ry', `${ry}deg`);
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.setProperty('--rx', '0deg');
+        card.style.setProperty('--ry', '0deg');
+      });
+    });
+  </script>
+</body>
+</html>
