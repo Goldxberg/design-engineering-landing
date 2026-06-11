@@ -154,6 +154,134 @@
 
         <hr />
 
+        <section id="onboarding" class="onboarding-section">
+          <h2>Try It: AI Onboarding</h2>
+          <p>A live demo — answer a few questions about your business and get a personalized AI implementation plan, powered by Claude.</p>
+          <div class="onboarding-wizard">
+            <div class="onboarding-progress">
+              <div class="onboarding-progress__bar"></div>
+            </div>
+            <div class="onboarding-step" data-step="0">
+              <h3>About Your Business</h3>
+              <p class="onboarding-subtitle">Let's start with the basics.</p>
+              <div class="onboarding-fields">
+                <div class="onboarding-field">
+                  <label>Business name</label>
+                  <input type="text" name="businessName" placeholder="Acme Corp" class="onboarding-input" />
+                </div>
+                <div class="onboarding-field">
+                  <label>Industry</label>
+                  <div class="onboarding-options onboarding-options--grid">
+                    <button type="button" data-field="industry">Retail / E-commerce</button>
+                    <button type="button" data-field="industry">Healthcare</button>
+                    <button type="button" data-field="industry">Real Estate</button>
+                    <button type="button" data-field="industry">Professional Services</button>
+                    <button type="button" data-field="industry">Hospitality / Restaurant</button>
+                    <button type="button" data-field="industry">Education</button>
+                    <button type="button" data-field="industry">Finance</button>
+                    <button type="button" data-field="industry">Other</button>
+                  </div>
+                </div>
+                <div class="onboarding-field">
+                  <label>Team size</label>
+                  <div class="onboarding-options onboarding-options--grid">
+                    <button type="button" data-field="teamSize">Just me</button>
+                    <button type="button" data-field="teamSize">2–5</button>
+                    <button type="button" data-field="teamSize">6–20</button>
+                    <button type="button" data-field="teamSize">21–100</button>
+                    <button type="button" data-field="teamSize">100+</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="onboarding-step" data-step="1" hidden>
+              <h3>Pain Points</h3>
+              <p class="onboarding-subtitle">What's eating up your team's time?</p>
+              <div class="onboarding-fields">
+                <div class="onboarding-field">
+                  <label>Select all that apply</label>
+                  <div class="onboarding-options onboarding-options--list">
+                    <button type="button" data-field="challenges" data-multi="true">Answering repetitive customer questions</button>
+                    <button type="button" data-field="challenges" data-multi="true">Scheduling & appointment booking</button>
+                    <button type="button" data-field="challenges" data-multi="true">Writing emails, proposals, or content</button>
+                    <button type="button" data-field="challenges" data-multi="true">Data entry & manual admin work</button>
+                    <button type="button" data-field="challenges" data-multi="true">Lead capture & follow-up</button>
+                    <button type="button" data-field="challenges" data-multi="true">Internal knowledge sharing</button>
+                    <button type="button" data-field="challenges" data-multi="true">Onboarding new employees</button>
+                    <button type="button" data-field="challenges" data-multi="true">Reporting & analytics</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="onboarding-step" data-step="2" hidden>
+              <h3>Current Tools</h3>
+              <p class="onboarding-subtitle">We'll build on what you already use.</p>
+              <div class="onboarding-fields">
+                <div class="onboarding-field">
+                  <label>Select all that apply</label>
+                  <div class="onboarding-options onboarding-options--list">
+                    <button type="button" data-field="tools" data-multi="true">Google Workspace</button>
+                    <button type="button" data-field="tools" data-multi="true">Microsoft 365</button>
+                    <button type="button" data-field="tools" data-multi="true">Slack</button>
+                    <button type="button" data-field="tools" data-multi="true">HubSpot / Salesforce</button>
+                    <button type="button" data-field="tools" data-multi="true">Notion</button>
+                    <button type="button" data-field="tools" data-multi="true">Zendesk / Intercom</button>
+                    <button type="button" data-field="tools" data-multi="true">Shopify / WooCommerce</button>
+                    <button type="button" data-field="tools" data-multi="true">Calendly / Acuity</button>
+                    <button type="button" data-field="tools" data-multi="true">QuickBooks / Xero</button>
+                    <button type="button" data-field="tools" data-multi="true">None of these</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="onboarding-step" data-step="3" hidden>
+              <h3>Your Goals</h3>
+              <p class="onboarding-subtitle">What does success look like?</p>
+              <div class="onboarding-fields">
+                <div class="onboarding-field">
+                  <label>Top priority</label>
+                  <div class="onboarding-options onboarding-options--grid">
+                    <button type="button" data-field="topGoal">Save time on repetitive tasks</button>
+                    <button type="button" data-field="topGoal">Improve customer experience</button>
+                    <button type="button" data-field="topGoal">Reduce costs</button>
+                    <button type="button" data-field="topGoal">Scale without hiring</button>
+                    <button type="button" data-field="topGoal">Stay competitive</button>
+                  </div>
+                </div>
+                <div class="onboarding-field">
+                  <label>Monthly AI budget</label>
+                  <div class="onboarding-options onboarding-options--grid">
+                    <button type="button" data-field="budget">Free tools only</button>
+                    <button type="button" data-field="budget">$20–$100/mo</button>
+                    <button type="button" data-field="budget">$100–$500/mo</button>
+                    <button type="button" data-field="budget">$500+/mo</button>
+                    <button type="button" data-field="budget">Not sure yet</button>
+                  </div>
+                </div>
+                <div class="onboarding-field">
+                  <label>When do you want to start?</label>
+                  <div class="onboarding-options onboarding-options--grid">
+                    <button type="button" data-field="timeline">This week</button>
+                    <button type="button" data-field="timeline">This month</button>
+                    <button type="button" data-field="timeline">Next quarter</button>
+                    <button type="button" data-field="timeline">Just exploring</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="onboarding-result" hidden>
+              <div class="onboarding-result__content"></div>
+            </div>
+            <div class="onboarding-nav">
+              <button type="button" class="onboarding-btn--back" hidden>Back</button>
+              <span class="onboarding-step-label">Step 1 of 4</span>
+              <button type="button" class="onboarding-btn--next">Continue</button>
+            </div>
+          </div>
+        </section>
+
+        <hr />
+
         <section id="examples" class="examples-section">
           <h2>More Interfaces</h2>
           <p>Experiments and demos that explore interaction, communication, and how complex systems can feel more human.</p>
